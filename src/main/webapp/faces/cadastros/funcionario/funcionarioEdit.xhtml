@@ -1,0 +1,200 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('cad_funcionario')}"/>
+
+        <h:body>
+
+            <div class="page-title">#{field.funcionario}</div>
+
+            <p:panel id="panel-add-funcinario" header="#{field.adicionar}" 
+                     rendered="#{funcionarioBean.tbfuncionario.idfuncionario == null}" toggleable="true"
+                     toggleSpeed="500">
+
+                <h:form id="panel-add-funcionario">
+
+                    <h:panelGrid id="panel-add-funcionario-pg-dadospessoais" columns="2" cellspacing="10">
+                        <h:outputText id="panel-add-funcionario-pg-ot-nome" value="#{field.nomedofuncionario}" class="text-bold"/>
+                        <p:inputText id="panel-add-funcionario-pg-it-nome" value="#{funcionarioBean.tbfuncionario.nmfuncionario}" required="true" 
+                                     requiredMessage="#{message.camponaopodeservazio}" style="width: 250px;">
+                            <p:ajax process="@this"/>
+                        </p:inputText>
+
+                        <h:outputText value="#{field.cpf}" class="text-bold"/>
+                        <p:inputMask  mask="999.999.999-99" id="cpf" size="25"
+                                      value="#{funcionarioBean.tbfuncionario.nrcpf}" required="true" 
+                                      requiredMessage="#{message.camponaopodeservazio}">
+                            <p:ajax process="@this"/>
+                        </p:inputMask>
+
+                        <h:outputText id="panel-add-funcionario-pg-ot-dn" value="#{field.datadenascimento}" class="text-bold"/>
+                        <p:calendar id="panel-add-funcionario-pg-cl-dn" value="#{funcionarioBean.tbfuncionario.dtnascimento}"
+                                    pattern="dd-MM-yyyy" mask="true" required="true"
+                                    requiredMessage="#{message.datadenascimentoeobrigatorio}"
+                                    style="width: 250px;">
+                            <p:ajax process="@this"/>
+                        </p:calendar>
+
+                        <h:outputText  value="#{field.cargo}" class="text-bold"/>
+                        <p:inputText id="panel-add-funcionario-pg-it-cargo" value="#{funcionarioBean.tbfuncionario.nmcargo}" required="true" 
+                                     requiredMessage="#{message.camponaopodeservazio}" style="width: 250px;">
+                            <p:ajax process="@this"/>
+                        </p:inputText>
+
+
+                        <h:outputText value="#{field.datadecontrato}" class="text-bold"/>
+                        <p:calendar value="#{funcionarioBean.tbfuncionario.dtcontrato}" required="true" 
+                                    pattern="dd-MM-yyyy" mask="true" requiredMessage="#{message.camponaopodeservazio}" style="width: 250px;">
+                          
+                        </p:calendar>
+
+                        <h:outputText value="#{field.sexo} *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-add-funcionario-pg-som-sx" value="#{funcionarioBean.tbfuncionario.insexo}"
+                                         required="true" requiredMessage="#{message.camponaopodeservazio}">
+                            <f:selectItem itemLabel="#{field.masculino}" itemValue="0"/>
+                            <f:selectItem itemLabel="#{field.feminino}" itemValue="1"/>
+                            <p:ajax process="@this"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText  value="#{field.celular}" class="text-bold"/>
+                        <p:inputMask mask="(99)99999-9999" value="#{funcionarioBean.tbfuncionario.nrcelular}">
+                            <p:ajax process="@this"/>
+                        </p:inputMask>
+
+                   <!--     <h:outputText id="panel-add-funcionario-pg-ot-ec" value="#{field.estadocivil} *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-add-funcionario-pg-som-ec" value="#{funcionarioBean.tbfuncionario.inestadocivil}"
+                                         required="true" requiredMessage="#{message.estadocivileobrigatorio}">
+                            <f:selectItem itemLabel="#{field.solteiro}" itemValue="0"/>
+                            <f:selectItem itemLabel="#{field.casado}" itemValue="1"/>
+                        </p:selectOneMenu>    -->
+
+
+
+
+                    </h:panelGrid>
+                </h:form>
+                <h:outputText/>
+                <h:form id="formCadastro">
+                    <h:panelGrid id="panel" columns="2" cellspacing="10" >
+
+                        <h:outputText value="É Dentista? " class="text-bold"/>
+                        <p:selectBooleanCheckbox value="#{funcionarioBean.funcionario}">
+                            <p:ajax event="change" update=":messages,formCadastro,panel" />
+                        </p:selectBooleanCheckbox>  
+
+                        <h:outputText id="panel-add-agendamento-pg-ot-especialidade" value="Especialidade *" 
+                                      class="text-bold" rendered="#{funcionarioBean.funcionario}"/>
+                        <p:selectOneMenu id="panel-add-agendamento-pg-som-especialidade" 
+                                         value="#{funcionarioBean.tbespecialidadeSelected}"
+                                         converter="converterEntity" required="true" 
+                                         requiredMessage="especialidade obrigatorio."
+                                         filter="true" filterMatchMode="contains"
+                                         rendered="#{funcionarioBean.funcionario}">                            
+                            <f:selectItems value="#{funcionarioBean.listTbespecialidades}" var="especialidade"
+                                           itemValue="#{especialidade}" itemLabel="#{especialidade.nmespecialidade}"/>
+                            <p:ajax event="change" update="panel-add-agendamento-pg-som-subespecialidade" process="@this"
+                                    listener="#{funcionarioBean.atualizaListSubEspecialidadeByEspecialidade()}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-add-agendamento-pg-ot-subespecialidade" value="Sub-especialidade *" 
+                                      class="text-bold" rendered="#{funcionarioBean.funcionario}"/>
+                        <p:selectOneMenu id="panel-add-agendamento-pg-som-subespecialidade" 
+                                         value="#{funcionarioBean.tbsubespecialidadeSelected}"
+                                         converter="converterEntity" required="true" 
+                                         requiredMessage="Sub-especialidade obrigatorio."
+                                         filter="true" filterMatchMode="contains"
+                                         rendered="#{funcionarioBean.funcionario}">
+                            <f:selectItem itemLabel="Selecione uma sub-especialidade"/>
+                            <f:selectItems value="#{funcionarioBean.listTbsubespecialidades}" var="subespecialidade"
+                                           itemValue="#{subespecialidade}" itemLabel="#{subespecialidade.nmsubespecialidade}"/>                            
+                        </p:selectOneMenu>                       
+                    </h:panelGrid>
+                    
+                    <div class="space"/>
+                    <p:commandButton value="#{field.salvar}" action="#{funcionarioBean.createFuncionario()}" 
+                                     onclick="PF('statusDialog').show();" ajax="false"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                    <p:spacer width="10px"/>
+                    <p:commandButton value="#{field.cancelar}" action="funcionarioList.jsf" icon="ui-icon-arrowreturnthick-1-w" 
+                                     immediate="true" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>                    
+                </h:form>                   
+               
+            </p:panel>
+
+            <p:panel header="#{field.editar}" rendered="#{funcionarioBean.tbfuncionario.idfuncionario != null}"
+                     toggleable="true" toggleSpeed="500">
+                <h:form>
+
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <h:outputText value="#{field.nomedofuncionario}" class="text-bold"/>
+
+                        <p:inputText value="#{funcionarioBean.tbfuncionario.nmfuncionario}" required="true" 
+                                     requiredMessage="#{message.camponaopodeservazio}" style="width: 250px;"/>
+
+                        <h:outputText value="#{field.cpf}" class="text-bold"/>
+                        <p:inputMask  mask="999.999.999-99" id="cpf" size="25"
+                                      value="#{funcionarioBean.tbfuncionario.nrcpf}" required="true" 
+                                      requiredMessage="#{message.camponaopodeservazio}"/>
+
+
+                        <h:outputText id="panel-add-funcionario-pg-ot-dn" value="#{field.datadenascimento}" class="text-bold"/>
+
+                        <p:calendar id="panel-add-funcionario-pg-cl-dn" value="#{funcionarioBean.tbfuncionario.dtnascimento}"
+                                    pattern="dd-MM-yyyy" mask="true" required="true"
+                                    requiredMessage="#{message.datadenascimentoeobrigatorio}"
+                                    style="width: 250px;"/>
+
+                        <h:outputText value="#{field.datadecontrato}" class="text-bold"/>
+
+                        <p:calendar id="panel-add-funcionario-pg-cl-dc" value="#{funcionarioBean.tbfuncionario.dtcontrato}" 
+                                    required="true" pattern="dd-MM-yyyy" mask="true" 
+                                    requiredMessage="#{message.camponaopodeservazio}" 
+                                    style="width: 250px;"/>
+
+                        <h:outputText value="#{field.sexo}" class="text-bold"/>
+
+                        <p:selectOneMenu id="panel-add-funcionario-pg-som-sx" value="#{funcionarioBean.tbfuncionario.insexo}"
+                                         required="true" requiredMessage="#{message.camponaopodeservazio}">
+                            <f:selectItem itemLabel="#{field.masculino}" itemValue="0"/>
+                            <f:selectItem itemLabel="#{field.feminino}" itemValue="1"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-cliente-pg-ot-cel" value="#{field.celular}" class="text-bold"/>
+                        <p:inputText value="#{funcionarioBean.tbfuncionario.nrcelular}"/>
+
+                     <!--   <h:outputText id="panel-add-funcionario-pg-ot-ec" value="#{field.estadocivil}" class="text-bold"/>
+                        <p:selectOneMenu id="panel-add-funcionario-pg-som-ec" value="#{funcionarioBean.tbfuncionario.inestadocivil}"
+                                         required="true" requiredMessage="#{message.estadocivileobrigatorio}">
+                            <f:selectItem itemLabel="#{field.solteiro}" itemValue="0"/>
+                            <f:selectItem itemLabel="#{field.casado}" itemValue="1"/>
+                        </p:selectOneMenu> -->
+
+
+
+
+                    </h:panelGrid>
+                    <div class="space"/>
+                    <p:commandButton value="#{field.salvar}" action="#{funcionarioBean.editarFuncionario()}" 
+                                     onclick="PF('statusDialog').show();" ajax="false"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                    <p:spacer width="10px"/>
+                    <p:commandButton value="#{field.cancelar}" action="funcionarioList.jsf" icon="ui-icon-arrowreturnthick-1-w" 
+                                     immediate="true" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                </h:form>
+            </p:panel> 
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Pagina inicial</title>
+        <link href="#{resource['images/logos/logo_mike.jpg']}" rel="shortcut icon" type="image/x-icon"/>
+        <script type="text/javascript" src="#{resource['js/locate-primefaces.js']}" language="js"/>
+        <h:outputStylesheet name="css/style.css" />
+
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                if (document.URL.indexOf("index.jsf") > -1) {
+                    document.getElementById('menu-left').style.display = 'block';
+                } else {
+                    document.getElementById('menu-left').style.display = 'none';
+                    $('.context').css('margin-left', '5px').css('width', '99%').css('margin-top', '10px');
+                }
+
+                if (document.getElementById('menu-left').style.display === 'block') {
+                    $('.context').css('margin-left', '210px');
+                }
+
+                $('.show_hide').click(function () {
+                    obj = document.getElementById('menu-left');
+                    if (obj.style.display === 'none') {
+                        $('.context').animate({marginTop: "-8px", marginLeft: "210px", width: "86%"}, "slow");
+                        $('#menu-left').show("slide", "slow");
+                    } else {
+                        $('#menu-left').hide("slide", "slow");
+                        $('.context').animate({marginTop: "40px", marginLeft: "5px", width: "99%"}, "slow");
+                    }
+                });
+            });
+        </script>    
+
+    </h:head>
+
+    <style>
+        .menu-left .ui-accordion .ui-accordion-content {padding: 0px;padding-left: 20px;}        
+        .menu-left .ui-accordion-header a:hover {text-shadow: none; color:#000;}
+    </style>
+
+    <h:body>
+        <f:view locale="#{localeController.currentLocale}">
+
+            <div id="geral" class="geral">
+
+                <div id="header" class="header">
+                    <ui:insert id="menu" name="menu">                        
+                        <ui:include id="include-menu" src="/faces/menutop.xhtml"/>
+                    </ui:insert>
+                </div>
+
+                <div id="menu-left" class="menu-left">                                
+                    <ui:insert id="menuleft" name="menuleft">
+                        <ui:include id="mnleft" src="/faces/menuleft.xhtml"/>
+                    </ui:insert>
+                </div>
+
+                <div id="context-ui-corner-all" class="context ui-corner-all">
+
+                    <p:growl id="messages" showDetail="true" showSummary="false" 
+                             autoUpdate="true" sticky="false" transient="true"/>
+                    <ui:insert name="context"/>  
+                </div>
+
+                <p:spacer  height="35px"/>
+
+                <div id="footer" class="footer">
+                    <ui:insert id="footer" name="footer">
+                        <ui:include id="footer" src="/faces/footer.xhtml"/>
+                    </ui:insert>
+                </div>
+            </div>
+
+            <p:dialog widgetVar="statusDialog" draggable="false" closable="false" modal="true" resizable="false">
+                <center>                                                                
+                    <p:graphicImage value="#{resource['images/ajaxloadingbar.gif']}" /> 
+                </center>
+            </p:dialog> 
+
+        </f:view>
+
+        <script type="text/javascript" language="js">
+            var pgtitle = $('.page-title').text();
+            if (pgtitle === "") {
+                pgtitle = 'SISO - Sitema Odontológico';
+            } else {
+                pgtitle = $('.page-title').text() + ' - SISO - Sitema Odontológico';
+            }
+            document.title = pgtitle;
+
+        </script>
+
+    </h:body>
+</html>
+
+
+

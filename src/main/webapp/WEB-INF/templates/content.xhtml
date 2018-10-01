@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                template="/pages/home/home.xhtml">
+
+    <ui:define name="content">
+        <p:dialog id="loginDialog" header="#{screenName}" widgetVar="dlg"
+                  visible="true" resizable="false" closable="true"
+                  closeOnEscape="false" styleClass="autoWidthDialog" position="30,50" >           
+
+            Aqui estar o dialgo responsible for showing the content.
+        </p:dialog>
+    </ui:define>
+</ui:composition>

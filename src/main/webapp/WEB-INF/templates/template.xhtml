@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+
+        <h:outputStylesheet library="css" name="default.css" />
+        
+        <style type="text/css">
+            body {
+                background:url(#{request.contextPath}/resources/images/background_new.jpg);
+                margin: 0;
+                padding: 0;
+                font-family: geneva, arial, helvetica, sans-serif;
+                font-size: 80%;
+                background-attachment: fixed;
+                background-color: #333;
+                background-position: top center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                -moz-background-size: cover;
+                -webkit-background-size: cover;
+            }
+
+            .ui-layout-unit-content {
+                background: transparent;
+            }
+
+        </style>           
+
+    </h:head>
+    <h:body>
+        <p:growl id="messages" showDetail="true" showSummary="false" autoUpdate="true" sticky="false" transient="true"/>
+        <ui:insert name="header">
+            <p:spacer height="20" />
+            <div id="top">
+                <center>
+                     <!--  <h:graphicImage library="images" name="logo_mike.jpg"/>-->
+                </center>
+            </div>
+        </ui:insert>
+
+        <ui:insert name="content" />
+
+        <ui:insert name="footer">
+            <div class="footer">
+                <center>
+                    <h:outputText value="© 2016 JF System" class="text-bold"
+                                  style="color: white;"/>
+                </center>
+            </div>
+        </ui:insert>
+    </h:body>       
+</html>

@@ -1,0 +1,72 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/faces/index.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('cad_modulo')}"/>
+
+        <h:body>            
+
+            <div class="page-title">#{field.modulo}</div>
+            
+            <p:panel id="searchResult" header="#{field.dadosdomodulos}" toggleable="true" toggleSpeed="500">
+                <h:form>
+
+                    <h:outputText value="#{message.nenhumresultadoencontrado}" rendered="#{empty moduloBean.listTbmodulo}"/>
+
+                    <p:dataTable var="modulo" value="#{moduloBean.listTbmodulo}" rowKey="#{modulo.idmodulo}"
+                                 paginator="#{moduloBean.listTbmodulo.size() > 10}" paginatorPosition="bottom"
+                                 rows="10" rendered="#{not empty moduloBean.listTbmodulo}" filteredValue="#{moduloBean.filteredmodulo}">                        
+
+                        <p:column headerText="#{field.idmodulo}" sortBy="#{modulo.idmodulo}" filterBy="#{modulo.idmodulo}">
+                            <h:link value="#{modulo.idmodulo}" onclick="PF('statusDialog').show();" outcome="/faces/cadastrosadministrativos/modulo/Modulo.jsf">
+                                <f:param value="#{modulo.idmodulo}" name="idmodulo"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.moduloptbr}" sortBy="#{modulo.nmmodulo}" filterBy="#{modulo.nmmodulo}">
+                            <h:link value="#{modulo.nmmodulo}" onclick="PF('statusDialog').show();" outcome="/faces/cadastrosadministrativos/modulo/Modulo.jsf">
+                                <f:param value="#{modulo.idmodulo}" name="idmodulo"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.moduloenus}" sortBy="#{modulo.nmmoduloEnUs}" filterBy="#{modulo.nmmoduloEnUs}">
+                            <h:link value="#{modulo.nmmoduloEnUs}" onclick="PF('statusDialog').show();" outcome="/faces/cadastrosadministrativos/modulo/Modulo.jsf">
+                                <f:param value="#{modulo.idmodulo}" name="idmodulo"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.descricao}" sortBy="#{modulo.txdescmodulo}" filterBy="#{modulo.txdescmodulo}">
+                            <h:link value="#{modulo.txdescmodulo}" onclick="PF('statusDialog').show();" outcome="/faces/cadastrosadministrativos/modulo/Modulo.jsf">
+                                <f:param value="#{modulo.idmodulo}" name="idmodulo"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink>
+                                <p:graphicImage value="#{resource['images/delete.gif']}" onclick="PF('confirmation').show();"/>
+                                <f:setPropertyActionListener value="#{modulo}" target="#{moduloBean.tbmodulo}"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+
+                    <div class="space"/>
+                    
+                    <p:confirmDialog message="#{message.desejadeletaromodulo}" widgetVar="confirmation" header="#{field.deletarmodulo}">
+                        <p:commandButton value="#{field.sim}" onclick="PF('statusDialog').show();" 
+                                         update=":searchResult,:messages" action="#{moduloBean.remove()}"/>
+                        <p:commandButton value="#{field.nao}" onclick="PF('confirmation').hide();"/>
+                    </p:confirmDialog>
+                    
+                    <p:commandButton value="#{field.adicionarmodulo}" action="/faces/cadastrosadministrativos/modulo/ModuloEdit.jsf?faces-redirect=true"
+                                     immediate="true" icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                </h:form>
+            </p:panel>
+
+        </h:body>
+    </ui:define>
+</ui:composition>

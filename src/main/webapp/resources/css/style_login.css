@@ -1,0 +1,38 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 30, 2015, 10:53:22 AM
+    Author     : ioliveira
+*/
+
+root {display: block;}
+
+* {margin:0 auto;padding:0;}
+
+html, body {font-family: Verdana, Arial, Helvetica, sans-serif;font-size:14px;height:100%;}
+
+body {background-image: url(/siso/resources/images/bg-login.png); background-repeat: no-repeat; background-size: cover; background-attachment: fixed;}
+
+.bordas_login {
+    color: #fff;
+    width: 500px;
+    border: #000000 1px solid;     
+    border-radius: 5px 20px 50px;
+    padding: 80px;
+    background: #aaa8a8; 
+    border: transparent;
+}
+
+.logo_top {
+    margin: auto; 
+    width: 150px; ;
+    border-radius: 5px 5px 5px 5px;    
+}  
+
+.text-bold {
+    font-weight: bold;
+    color: black;
+}

@@ -1,0 +1,157 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 30, 2015, 4:17:40 PM
+    Author     : ioliveira
+*/
+
+* {margin:0;padding:0; font-family: arial,sans-serif;}
+
+html, body {background-color: #e7e7e7;height:100%; font-size: 12px;}
+
+a:hover, .ui-state-hover a:hover {text-shadow: #0090ff 0px 0px 2px;color: #0069ba;}
+a, .ui-widget-content a {text-decoration: none;color: #0069ba;-webkit-transition: text-shadow 0.5s ease;transition: text-shadow 0.5s ease;}
+a img {border-color: #fff;}
+
+.ui-widget .ui-widget {font-size: 12px;}
+
+.logo_top {float: left;position: absolute;height: 70px;top:-10px;left:5px;}
+
+.ui-growl {   
+    top: 40%;
+    left: 37%;
+}
+
+body {height: 96%;}
+
+.ui-toolbar-group-left {padding-left: 10px;padding-top:4px;}
+.ui-toolbar-group-right {padding-left: 10px;padding-top:4px;}
+.ui-menuitem-text {font-weight: normal !important;}
+
+.geral {min-height:100%;position:relative;width:100%;}
+
+.footer {position:fixed;bottom:0;width:100%;display: block;}
+.footer{border-radius: 0px;-webkit-border-radius: 0px;-moz-border-radius: 0px;} 
+
+.header {position: fixed;display: block;width: 100%;top: 0;z-index: 300;}
+
+.menu-left {display: none;position: initial; width:200px; height: 100%; left:0; margin-top: 57px; padding-top: 2px; padding-right: 1px;
+            box-shadow: 0 0 10px 2px #cccccc;
+            border-right: 0px solid #bed6f8;
+}
+.menu-left .ui-widget-content .ui-state-hover {background: none;}
+
+.context {width: 83%;
+          height: 88%;
+          position: absolute; 
+          top: 25px; 
+          left: 0px;
+          overflow:auto;}
+
+.text-bold {font-weight: bold;}
+
+.bt-default {color:#000 !important;padding: .3em 1em .3em 1.1em; display: inline; line-height: 1.4; border: 1px solid #bed6f8;background: #bed6f8 url("/sfcs/javax.faces.resource/images/default.png.jsf?ln=primefaces-bluesky") repeat-x;color: #000000;font-weight: bold;cursor: pointer; text-decoration: none; font-size: 11px;}
+.bt-default:hover {text-shadow: none}
+
+.link-bt-default {color:#000 !important;padding: 7px 10px 6px 10px; display: inline; line-height: 1.4; border: 1px solid #bed6f8;background: #bed6f8 url("/sfcs/javax.faces.resource/images/default.png.jsf?ln=primefaces-bluesky") repeat-x;color: #000000;font-weight: bold;cursor: pointer; text-decoration: none; font-size: 12px;}
+.link-bt-default:hover {text-shadow: none}
+
+#formResult .ui-widget-header {border: 0px solid !important;}
+#formResult .ui-tabs {padding: 0px;}
+
+/* Define a imagem de fundo do titulo das paginas*/
+.page-title {background: linear-gradient(#747474, #4B4B4B); padding:4px; padding-left: 20px; color: #fff; font-weight: bold; margin-bottom: 5px; font-size: 16px; -webkit-transition: text-shadow 0.5s ease;transition: text-shadow 0.5s ease;}
+
+/* um espaçamento entre os componentes*/
+.space {padding:5px;}
+
+/* Deixa a borda dos componentes listados arredondadas*/
+.ui-panel, .ui-panel-titlebar, .page-title {-moz-border-radius: 0px;-webkit-border-radius: 5px !important;border-radius: 5px !important;}
+
+/* Faz com que o texto das celulas do datatable cortem, conforme o tamanho da coluna */
+.ui-datatable tbody td, .ui-datatable tfoot td {white-space:initial;}
+.ui-widget-content .ui-datatable-even td {white-space: initial;}
+
+.ui-button-text:hover, .bt-default:hover, .link-bt-default:hover {    
+    /* Para Mozilla/Gecko (Firefox etc) */
+    background: -moz-linear-gradient(top, #eff5fa, #FFFFFF) repeat-X;
+    /* Para WebKit (Safari, Google Chrome etc) */
+    background: -webkit-gradient(linear, left top, left bottom, from(#eff5fa), to(#FFFFFF)) repeat-X;
+    /* Para IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#eff5fa, endColorstr=#FFFFFF)";
+    /* Para IE 5.5 - 7 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#eff5fa, endColorstr=#FFFFFF);
+}
+
+/* checkbox e radiobutton modificados */
+/*.ui-chkbox .ui-chkbox-box, .ui-selection-column, .ui-radiobutton .ui-radiobutton-box {background: none; border:1px solid cornflowerblue;background-color: #fff;}
+.ui-datatable-footer .ui-button-text {border:1px solid #000;}
+.ui-radiobutton {padding-left: 5px;padding-right: 2px;}*/
+
+/* tooltip Personalizado */
+a.tooltip {outline:none;}
+a.tooltip strong {line-height:30px;}
+a.tooltip:hover {text-decoration:none; text-shadow: none;} 
+a.tooltip span {z-index:10;display:none; padding:10px 15px;margin-top:-50px; margin-left:0px;width:auto; line-height:normal;font-weight: normal;}
+a.tooltip:hover span {display:inline; position:absolute; color:#111;border:1px solid #DCA; background:#fffAF0;}
+.callout {z-index:20;position:absolute;top:35px;border:0;left:5px;}
+
+/* tooltip para browsers que aceitam CCS3 */
+a.tooltip span {border-radius:4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;-moz-box-shadow: 5px 5px 8px #CCC;-webkit-box-shadow: 5px 5px 8px #CCC;box-shadow: 5px 5px 8px #CCC;}
+
+/* - TOOLTIP LEFT - */
+.l-tooltip {outline:none;font-weight: normal;}
+.l-tooltip strong {line-height:30px;}
+.l-tooltip:hover {text-decoration:none; text-shadow: none;} 
+.l-tooltip span {z-index:10;display:none; padding:14px 20px;margin-top:-50px; margin-left:-110px;width:auto; line-height:normal;}
+.l-tooltip:hover span {display:block; position:absolute; color:#111;border:1px solid #DCA; background:#fffAF0;}
+.l-callout {z-index:20;position:absolute;top:30px;border:0;right:0px;float:right;}
+/* ---------------------------------- */
+
+/* Icones personalizados*/
+.icon-red {background-image: url("#{resource['images/ui-icons_cc0000_256x240.png']}") !important; }
+.ui-icon-logout { background-position: 0 -177px;}
+
+.icon-menu {background-image: url("#{resource['images/menu_icons.png']}") !important; }
+.ui-icon-menu { background-position: -143px -1px;}
+
+.panel-export{display: table;padding:0px;border:0px solid;}
+
+
+#table-selection {text-align: center;}
+
+#table-selection td {-webkit-transition: all .2s linear;-moz-transition: all .2s linear;-o-transition: all .2s linear;transition: all .2s linear;}
+
+.effect-transition {-webkit-transition: all .2s linear;-moz-transition: all .2s linear;-o-transition: all .2s linear;transition: all .2s linear;}
+
+#table-selection .ui-panel-titlebar {padding: 1.5em 2em 1.3em;}
+
+.ui-notificationbar {margin-top: 50px;}
+
+.not-authorized{background-color: #fffAF0; border: 1px solid darksalmon; color:#000; padding:5px;}
+
+.ui-fieldset .ui-fieldset-legend {background: linear-gradient(#747474, #4B4B4B);color: #ffffff;}
+
+.ui-panel-titlebar {background: #3baae3;color: #ffffff;border: #000;}
+
+.nmcompany {font-weight: bold; text-align: center;color:#FFFFFF;font-size:14px;
+            border:1px solid #fff; background:linear-gradient(#FC2424,#720000);
+            padding:4px;margin-right: 10px;
+            border-radius: 5px;           
+}
+
+.ui-autocomplete-input {width:200px;}
+
+#tableTeste{
+    border-spacing: 0px;
+    border: 0px;
+    border-width:0px;
+    padding: 0px 0px 0px 0px;
+}
+
+.linha{
+    display: flex;
+}

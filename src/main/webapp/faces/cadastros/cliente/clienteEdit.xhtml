@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                template="/faces/index.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('cliente')}"/>
+
+        <h:body>
+
+            <div class="page-title">#{field.cliente}</div>
+
+            <p:panel id="panel-edit-cliente" header="#{field.editardadosdocliente}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="form-edit-cliente">
+
+                    <h:panelGrid id="panel-edit-cliente-pg-dadospessoais" columns="4" cellspacing="15">
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-nome" value="#{field.nome} *" class="text-bold"/>
+                        <p:inputText id="panel-edit-cliente-pg-it-nome" value="#{clienteBean.tbcliente.nmcliente}"
+                                     required="true" requiredMessage="#{message.nomeeobrigatorio}" style="width: 200px;"/>                       
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-cpf" value="#{field.cpf} *" class="text-bold"/>
+                        <p:inputMask id="panel-edit-cliente-pg-it-cpf" size="15" mask="999.999.999-99"
+                                     value="#{clienteBean.tbcliente.nrcpf}" required="true" requiredMessage="#{message.cpfeobrigatorio}"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-rg" value="#{field.rg}" class="text-bold"/>
+                        <p:inputMask id="panel-add-cliente-pg-it-rg" value="#{clienteBean.tbcliente.nrrg}" size="13" mask="99.999.999-9"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-dn" value="#{field.datadenascimento} *" class="text-bold"/>
+                        <p:calendar id="panel-edit-cliente-pg-cl-dn" value="#{clienteBean.tbcliente.dtnascimento}"
+                                    pattern="dd-MM-yyyy" mask="true" required="true"
+                                    requiredMessage="#{message.datadenascimentoeobrigatorio}"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-ec" value="#{field.estadocivil} *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-cliente-pg-som-ec" value="#{clienteBean.tbcliente.inestadocivil}"
+                                         required="true" requiredMessage="#{message.estadocivileobrigatorio}">
+                            <f:selectItem itemLabel="#{field.solteiro}" itemValue="0"/>
+                            <f:selectItem itemLabel="#{field.casado}" itemValue="1"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-sx" value="#{field.sexo} *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-cliente-pg-som-sx" value="#{clienteBean.tbcliente.insexo}"
+                                         required="true" requiredMessage="#{message.sexoeobrigatorio}">
+                            <f:selectItem itemLabel="#{field.masculino}" itemValue="0"/>
+                            <f:selectItem itemLabel="#{field.feminino}" itemValue="1"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-ocupation" value="#{field.ocupacao}" class="text-bold"/>
+                        <p:inputText id="panel-edit-cliente-pg-it-ocupation" value="#{clienteBean.tbcliente.nmocupacao}"
+                                     style="width: 200px;"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-telefone" value="#{field.telefone}" class="text-bold"/>
+                        <p:inputMask id="panel-edit-cliente-pg-it-telefone" value="#{clienteBean.tbcliente.nrtelefone}" size="15" mask="(99) 9999-9999"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-celular" value="#{field.celular}" class="text-bold"/>
+                        <p:inputMask id="panel-edit-cliente-pg-it-celular" value="#{clienteBean.tbcliente.nrcelular}" size="15" mask="(99) 99999-9999"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-email" value="#{field.email}" class="text-bold"/>
+                        <p:inputText id="panel-edit-cliente-pg-it-email" value="#{clienteBean.tbcliente.nmemail}" 
+                                     style="width: 200px;"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-logradouro" value="#{field.logradouro} *" class="text-bold"/>
+                        <p:inputText id="panel-edit-cliente-pg-it-logradouro" value="#{clienteBean.tbcliente.nmlogradouro}"
+                                     style="width: 200px;"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-numero" value="#{field.numero} *" class="text-bold"/>
+                        <p:inputMask id="panel-edit-cliente-pg-it-numero" value="#{clienteBean.tbcliente.nrnumero}" 
+                                     mask="999" size="3"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-complemento" value="#{field.complemento} *" class="text-bold"/>
+                        <p:inputText id="panel-edit-cliente-pg-it-complemento" value="#{clienteBean.tbcliente.nmcomplemento}"
+                                     style="width: 200px;"/>                               
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-cidade" value="#{field.cidade} *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-cliente-pg-som-cidade" value="#{clienteBean.tbcliente.idcidade}"
+                                         filter="true" filterMatchMode="contains" converter="converterEntity" 
+                                         >
+
+                            <f:selectItems value="#{clienteBean.listTbcidades}" var="cidades" itemValue="#{cidades}"
+                                           itemLabel="#{cidades.nmcidade}"/>
+                            <p:ajax event="change" update="panel-edit-cliente-pg-som-bairro" process="@this"
+                                    listener="#{clienteBean.atualizaListBairroByCidade()}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-bairro" value="#{field.bairro}" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-cliente-pg-som-bairro" value="#{clienteBean.tbcliente.idbairro}"
+                                         filter="true" filterMatchMode="contains" converter="converterEntity" 
+                                         >
+                            <f:selectItem itemLabel="Selecione o Bairro"/>
+                            <f:selectItems value="#{clienteBean.listTbbairros}" var="bairro" itemValue="#{bairro}"
+                                           itemLabel="#{bairro.nmbairro}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-cep" value="#{field.cep}" class="text-bold"/>
+                        <p:inputMask id="panel-edit-cliente-pg-it-cep" value="#{clienteBean.tbcliente.nrcep}" 
+                                     size="9" mask="99999-999"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-referencia" value="#{field.pontodereferencia}" class="text-bold"/>
+                        <p:inputTextarea id="panel-edit-cliente-pg-it-referencia" value="#{clienteBean.tbcliente.nmpontoreferencia}"
+                                         cols="20" rows="5" maxlength="50" counter="display" 
+                                         counterTemplate="{0} #{field.caracteresrestantes}"/>                       
+
+                        <h:outputText/>
+                        <h:outputText/>
+
+                        <h:outputText/>
+                        <h:outputText id="display"/>
+                    </h:panelGrid> 
+
+                    <div class="space"/>
+
+                    <p:commandButton id="button-salva-cliente" value="#{field.salvar}" 
+                                     action="#{clienteBean.editarCliente()}" ajax="false" 
+                                     icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                    <p:spacer width="10px"/>
+
+                    <p:commandButton id="button-voltar-list" value="#{field.voltar}" action="cliente.xhtml" 
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()">
+                        <f:param value="#{clienteBean.tbcliente.idcliente}" name="idCliente"/>
+                    </p:commandButton>
+
+                </h:form>
+
+            </p:panel>
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>

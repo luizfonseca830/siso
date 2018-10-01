@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="content">
+        <div class="ui-fluid">
+            <p:dialog id="valida" header="Chave de Acesso"
+                      widgetVar="dlg" visible="true" draggable="false" resizable="false"
+                      closable="false" closeOnEscape="false">            
+                <h:form id="validar"
+                        prependId="false">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputText value="#{field.chave}:" class="text-bold"/>
+                        <p:inputText id="nmloginusuario" autocomplete="off" 
+                                     value="#{validaBean.tbchave.chave}" label="Chave" required="true" />
+
+                    </h:panelGrid>
+                    <center>
+                        <p:commandButton                                    
+                            value="#{field.confirmar}" ajax="false" 
+                            style="margin:0;float: start" 
+                             icon="ui-icon-check" />
+                        
+                           
+                    </center>
+                </h:form>
+            </p:dialog>
+        </div>
+    </ui:define>
+</ui:composition>

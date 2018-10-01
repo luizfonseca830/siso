@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+    
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('usuario')}"/>
+
+        <h:body>
+
+            <div class="page-title">#{field.usuario}</div>
+            
+            <p:panel header="#{field.pesquisar} #{field.usuario}"  toggleable="true" toggleSpeed="500">
+                <h:form>
+                    <h:panelGrid columns="2" cellspacing="15" cellpadding="10">
+
+                        <p:inputText value="#{cadastroUsuarioBean.paramPesquisa}" style="width: 600px; height: 17px"/>
+
+                        <p:commandButton value="#{field.pesquisar}" action="#{cadastroUsuarioBean.pesquisar()}" 
+                                         update=":resultUser" icon="ui-icon-search" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+
+                    </h:panelGrid>
+                </h:form>         
+            </p:panel>
+
+            <p:spacer height="10px"/>
+
+            <h:form id="resultUser">
+                <p:panel header="#{field.resultado}" id="panresult" toggleable="true" toggleSpeed="500">
+                    <h:outputText id="not-result" value="#{message.nenhumresultadoencontrado}"  
+                                  rendered="#{empty cadastroUsuarioBean.listUsers}"/>
+
+                    <p:dataTable id="id-datatable"  var="user" value="#{cadastroUsuarioBean.listUsers}" 
+                                 rowKey="#{user.idusuario}" paginator="#{cadastroUsuarioBean.listUsers.size() > 30}"
+                                 paginatorPosition="bottom" rows="18" selectionMode="single" rendered="#{not empty cadastroUsuarioBean.listUsers}" >
+
+                        <p:column id="column-usuario" headerText="#{field.usuario}" sortBy="#{user.nmnomeusuario}" >
+                            <h:link id="userlink" value="#{user.nmnomeusuario}" outcome="/faces/cadastrosadministrativos/usuario/consultarUser.xhtml">
+                                <f:param id="param" name="user" value="#{user.idusuario}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column id="column-login" headerText="#{field.login}" sortBy="#{user.nmloginusuario}" >
+                            <h:link value="#{user.nmloginusuario}" outcome="/faces/cadastrosadministrativos/usuario/consultarUser.xhtml">
+                                <f:param name="user" value="#{user.idusuario}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column id="column-cracha" headerText="#{field.cracha}" sortBy="#{user.nmcracha}">
+                            <h:link value="#{user.nmcracha}" outcome="/faces/cadastrosadministrativos/usuario/consultarUser.xhtml">
+                                <f:param name="user" value="#{user.idusuario}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink>
+                                <p:graphicImage value="#{resource['images/delete.gif']}" onclick="PF('confirmation').show();"/>
+                                <f:setPropertyActionListener value="#{user}" target="#{cadastroUsuarioBean.usuarioSelected}" />  
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+
+                    <div class="space"/>
+                    
+                    <p:confirmDialog id="confirmDialog" message="#{message.desejadeletarusuario}" header="#{field.excluir} #{field.usuario}" severity="alert" widgetVar="confirmation">  
+                        <p:commandButton id="confirm" value="#{field.sim}" onclick="PF('statusDialog').show();" update=":resultUser,:messages" action="#{cadastroUsuarioBean.deleteUsuario()}"/>  
+                        <p:commandButton id="decline" value="#{field.nao}" onclick="PF('confirmation').hide();" type="button" />   
+                    </p:confirmDialog> 
+
+                    <p:commandButton value="#{field.adicionar}" action="/faces/cadastrosadministrativos/usuario/cadastroUsuario.xhtml" 
+                                     ajax="false" icon="ui-icon-plusthick" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

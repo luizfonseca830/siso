@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('funcionalidade')}"/>
+
+        <h:body>
+
+            <div class="page-title">#{field.funcionalidade}</div>
+
+            <h:form id="consultmenu">
+
+                <p:panel header="#{field.funcionalidade}" toggleable="true" toggleSpeed="500">
+
+                    <h:panelGrid columns="2" cellspacing="10">
+
+                        <h:outputText value="#{field.idfuncionalidade}" class="text-bold"/>
+                        <h:outputText  value="#{funcionalidadeBean.tbmenu.idmenu}" />
+
+                        <h:outputText value="#{field.funcionalidadept}" class="text-bold"/>
+                        <h:outputText value="#{funcionalidadeBean.tbmenu.nmmenu}" />
+
+                        <h:outputText value="#{field.funcionalidadeus}" class="text-bold"/>
+                        <h:outputText value="#{funcionalidadeBean.tbmenu.nmmenuEnUs}" />
+
+                        <h:outputText value="#{field.regra}" class="text-bold"/>
+                        <h:outputText value="#{funcionalidadeBean.tbmenu.txrole}" />
+
+                        <h:outputText value="#{field.modulo}" class="text-bold"/>
+                        <h:outputText  value="#{funcionalidadeBean.tbmenu.idmodulo.nmmodulo}" />
+
+                        <h:outputText value="#{field.caminho}" class="text-bold"/>
+                        <h:outputText value="#{funcionalidadeBean.tbmenu.txurl}" />
+
+                        <h:outputText value="#{field.sequencia}" class="text-bold"/>
+                        <h:outputText value="#{funcionalidadeBean.tbmenu.insequencia}" />
+
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+                        <p:commandButton value="#{field.editar}" action="/faces/cadastrosadministrativos/funcionalidade/menuEdit.jsf" 
+                                         ajax="false" icon="ui-icon-pencil" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()">
+                            <f:param name="menuId" value="#{funcionalidadeBean.tbmenu.idmenu}"/>
+                        </p:commandButton>
+                        <p:commandButton value="#{field.voltar}" action="/faces/cadastrosadministrativos/funcionalidade/menuList.xhtml" 
+                                         immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+
+            <p:spacer height="10px"/>
+
+            <h:form id="acesso-users">
+                <p:panel id="list-usuario-funcionalidade" header="#{field.usuarios}">
+                    <p:dataTable id="list-user" value="#{funcionalidadeBean.listAcessoMenu}" var="menu"
+                                 rowKey="#{menu.idusuario.idusuario}" paginator="#{funcionalidadeBean.listAcessoMenu.size() > 30}"
+                                 paginatorPosition="bottom" rows="18"  rendered="#{not empty funcionalidadeBean.listAcessoMenu}"
+                                 filteredValue="#{funcionalidadeBean.listRecebeMenu}" widgetVar="menuall" >
+
+                        <p:column filterBy="#{menu.idusuario.nmnomeusuario}" filterMatchMode="contains" >
+                            <h:outputText value="#{menu.idusuario.nmnomeusuario}" />
+                        </p:column>
+                        <p:column>
+                            <p:commandLink>
+                                <p:graphicImage id="deleteAcesso" value="#{resource['images/delete.gif']}" onclick="PF('confirmation').show();"/>
+                                <f:setPropertyActionListener value="#{menu}" target="#{funcionalidadeBean.tbacesso}"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:confirmDialog header="#{field.excluir}" widgetVar="confirmation" 
+                                     message="#{message.desejaexcluirrealmente}" severity="alert">
+
+                        <p:commandButton id="confirm" value="#{field.sim}" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()" 
+                                         update="list-usuario-funcionalidade,:messages" actionListener="#{funcionalidadeBean.remove()}"/>
+                        <p:commandButton id="decline" value="#{field.nao}" onclick="PF('confirmation').hide();" type="button"/>
+                    </p:confirmDialog>
+                </p:panel>
+
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

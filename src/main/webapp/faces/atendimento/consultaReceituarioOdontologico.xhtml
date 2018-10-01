@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"                
+      xmlns:p="http://primefaces.org/ui"      
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Histórico de Receituário</title>
+        
+        <!--   <link href="#{resource['images/logos/logo_mike.jpg']}" rel="shortcut icon" type="image/x-icon"/>-->
+        <script type="text/javascript" src="#{resource['js/locate-primefaces.js']}" language="js"/>
+        <h:outputStylesheet name="css/style.css" />
+    </h:head>
+
+    <h:outputText id="page-rule" rendered="#{menuBean.isRule('atendimento')}"/>
+
+    <h:body onload="#{odontogramaBean.loadConsultasReceituariosOdontologicos()}">        
+
+        <div class="page-title">Histórico de Receituário</div>
+
+        <p:panel id="panel-historico-receituario" header="Dados dos receituários">
+
+            <h:form id="form-historico-receituario">
+
+                <h:panelGrid id="pg-historico-receituario" columns="4" cellspacing="10">
+
+                    <h:outputText id="historico-receituario-ot-paciente" value="Paciente" class="text-bold"/>
+                    <h:outputText id="historico-receituario-ot-paciente-value" 
+                                  value="#{odontogramaBean.tbatendimento.idagendamento.idcliente.nmcliente}"/>
+
+                    <h:outputText id="historico-receituario-ot-dtnascimento" value="Data nascimento" class="text-bold"/>
+                    <h:outputText id="historico-receituario-ot-dtnascimento-value" 
+                                  value="#{odontogramaBean.tbatendimento.idagendamento.idcliente.dtnascimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>                                              
+
+                </h:panelGrid>
+
+                <p:dataTable value="#{odontogramaBean.listTbreceituarios}" var="consultaReceituario"
+                             emptyMessage="Nenhum registro de receituário foi encontrado.">
+
+                    <p:columnGroup type="header">
+                        <p:row>
+                            <p:column headerText="Data " />
+                            <p:column headerText="Receituário" />                                
+                            <p:column headerText="Profissional" />
+                        </p:row>                                
+                    </p:columnGroup>
+
+                    <p:column>
+                        <h:outputText value="#{consultaReceituario.dtdatareceituario}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="GMT-04:00"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column>
+                        <h:outputText value="#{consultaReceituario.nmreceituario}"/>
+                    </p:column>
+
+                    <p:column>
+                        <h:outputText value="#{consultaReceituario.idatendimento.idagendamento.idfuncionario.nmfuncionario}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </h:form>
+
+        </p:panel>
+
+    </h:body>
+</html>

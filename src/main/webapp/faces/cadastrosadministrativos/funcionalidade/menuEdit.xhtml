@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="context">       
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('funcionalidade')}"/>
+        <h:body>
+
+            <div class="page-title">#{field.funcionalidade}</div>
+
+            <h:form id="editFuncionalidade">
+                <p:panel header="#{field.editarfuncionalidade}" toggleable="true" toggleSpeed="500">
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <h:outputText value="#{field.funcionalidadept}" class="text-bold"/>
+                        <p:inputText id="Funcionalidadept_BR" value="#{funcionalidadeBean.tbmenu.nmmenu}" 
+                                     required="true" requiredMessage="#{message.funcionalidadeenecessarionoidiomaportugues}"/>
+
+                        <h:outputText value="#{field.funcionalidadeus}" class="text-bold"/>
+                        <p:inputText id="Funcionalidadeen_US" value="#{funcionalidadeBean.tbmenu.nmmenuEnUs}" 
+                                     required="true" requiredMessage="#{message.funcionalidadeenecessarionoidiomaingles}"/>
+
+                        <h:outputText value="#{field.regra}" class="text-bold"/>
+                        <p:inputText value="#{funcionalidadeBean.tbmenu.txrole}" style="width: 400px"/>
+
+                        <h:outputText value="#{field.modulo}" class="text-bold"/>
+                        <p:selectOneMenu id="Modulo" value="#{funcionalidadeBean.tbmenu.idmodulo}" 
+                                         converter="converterEntity" required="true" 
+                                         requiredMessage="#{message.selecioneummodulo}">
+                            <f:selectItems value="#{funcionalidadeBean.allModulos}" var="modulo" 
+                                           itemLabel="#{modulo.nmmodulo}" itemValue="#{modulo}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText value="#{field.caminho}" class="text-bold"/>
+                        <p:inputText value="#{funcionalidadeBean.tbmenu.txurl}" style="width: 500px"/>
+
+                        <h:outputText value="#{field.sequencial}" class="text-bold"/>
+                        <p:inputText value="#{funcionalidadeBean.tbmenu.insequencia}" />
+
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+                        <p:commandButton value="#{field.salvar}" action="#{funcionalidadeBean.edit()}" icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+                        <p:commandButton value="#{field.voltar}" action="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.jsf"
+                                         immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()">
+                            <f:param name="menuId" value="#{funcionalidadeBean.tbmenu.idmenu}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

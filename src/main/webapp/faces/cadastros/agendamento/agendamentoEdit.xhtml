@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">       
+
+    <ui:define name="context">           
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('agendamento')}"/>       
+
+        <h:body>
+
+            <div class="page-title">Agendamento</div>
+
+            <p:panel id="panel-edit-agendamento" header="tela de edição de agendamento" toggleable="true" toggleSpeed="500">
+
+                <h:form id="form-edit-agendamento">
+
+                    <h:panelGrid id="panel-edit-agendamento-pg" columns="2" cellspacing="10">
+
+                        <h:outputText id="panel-edit-agendamento-pg-ot-tipo" value="#{field.tipo} *" class="text-bold"/>
+                        <h:selectOneRadio id="panel-edit-agendamento-pg-sor-tipo" value="#{agendamentoBean.tbagendamento.intipo}">
+                            <f:selectItem itemValue="0" itemLabel="Agendamento"/>
+                            <f:selectItem itemValue="1" itemLabel="Orçamento"/>
+                        </h:selectOneRadio>
+
+                        <h:outputText id="panel-edit-agendamento-pg-ot-paciente" value="Paciente *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-agendamento-pg-som-paciente" value="#{agendamentoBean.tbagendamento.idcliente}"
+                                         converter="converterEntity" required="true" requiredMessage="paciente obrigatorio."
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItems value="#{agendamentoBean.listTbclientes}" var="cliente"
+                                           itemValue="#{cliente}" itemLabel="#{cliente.nmcliente}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-agendamento-pg-ot-especialidade" value="Especialidade *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-agendamento-pg-som-especialidade" value="#{agendamentoBean.tbagendamento.idespecialidade}"
+                                         converter="converterEntity" required="true" requiredMessage="especialidade obrigatorio."
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="Selecione uma especialidade"/>
+                            <f:selectItems value="#{agendamentoBean.listTbespecialidades}" var="especialidade"
+                                           itemValue="#{especialidade}" itemLabel="#{especialidade.nmespecialidade}"/>
+                            <p:ajax event="change" update="panel-edit-agendamento-pg-som-subespecialidade" process="@this"
+                                    listener="#{agendamentoBean.atualizaListSubEspecialidadeByEspecialidade()}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-agendamento-pg-ot-subespecialidade" value="Sub-especialidade *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-agendamento-pg-som-subespecialidade" value="#{agendamentoBean.tbagendamento.idsubespecialidade}"
+                                         converter="converterEntity" required="true" requiredMessage="Sub-especialidade obrigatorio."
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="Selecione uma sub-especialidade"/>
+                            <f:selectItems value="#{agendamentoBean.listTbsubespecialidades}" var="subespecialidade"
+                                           itemValue="#{subespecialidade}" itemLabel="#{subespecialidade.nmsubespecialidade}"/>                            
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-agendamento-pg-ot-profissional" value="Profissional *" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-agendamento-pg-som-profissional" value="#{agendamentoBean.tbagendamento.idfuncionario}"
+                                         converter="converterEntity" required="true" requiredMessage="Funcionario obrigatorio."
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="Selecione uma profissional"/>
+                            <f:selectItems value="#{agendamentoBean.listTbfuncionarios}" var="funcionario"
+                                           itemValue="#{funcionario}" itemLabel="#{funcionario.nmfuncionario}"/>                            
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-edit-agendamento-form-ot-data" value="Data" class="text-bold"/>
+                        <p:calendar id="panel-edit-agendamento-form-calendar-data" value="#{agendamentoBean.tbagendamento.tmdataagendamento}" 
+                                    pattern="dd/MM/yyyy HH:mm" timeZone="GMT-04:00" showOn="button" required="true"
+                                    requiredMessage="data é obrigatorio." navigator="true"
+                                    style="width: 250px;" mode="popup"/>
+
+                    </h:panelGrid> 
+
+                    <div class="space"/>
+
+                    <p:commandButton id="button-salva-agendamento-edit" value="#{field.salvar}" 
+                                     action="#{agendamentoBean.editarTbagendamento()}" 
+                                     ajax="false" 
+                                     icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                    <p:spacer width="10px"/>
+
+                    <p:commandButton id="button-voltar-agendamento" value="#{field.voltar}" action="agendamento.xhtml" 
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()">
+                        <f:param name="idAgendamento" value="#{agendamentoBean.tbagendamento.idagendamento}"/>
+                    </p:commandButton>
+
+                </h:form>
+
+            </p:panel>            
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>
+
+

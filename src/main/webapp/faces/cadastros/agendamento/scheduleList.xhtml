@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:comps="http://xmlns.jcp.org/jsf/composite/comps">
+
+    <ui:define name="context">           
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('agendamento')}"/>       
+
+        <style type="text/css">
+            .value {
+                width: 1100px;                
+            }
+        </style>
+
+        <h:body>
+
+            <div class="page-title">Agendamento</div>
+
+            <h:form id="panel-result-schedule-form">
+
+                <p:commandButton value="Atualizar status paciente" immediate="true" icon="ui-icon-arrowreturnthick-1-w"
+                                 action="agendamentoList.xhtml" onclick="PF('statusDialog').show();"
+                                 oncomplete="PF('statusDialog').hide()"/>
+
+                <div class="space"/>
+
+                <h:panelGrid columnClasses="value">
+                    <p:schedule id="agendamentoSchedule" value="#{agendamentoBean.scheduleAgendamento}"
+                                widgetVar="scheduleAgendamento"
+                                timeZone="GMT-4" view="agendaDay"
+                                tooltip="false">
+
+                        <p:ajax event="dateSelect" listener="#{agendamentoBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();"/>                    
+                        <p:ajax event="eventSelect" listener="#{agendamentoBean.onEventSelect}" update=":dialogAgendamento" oncomplete="PF('agendamentoDialog').show();"/>
+                        <p:ajax event="eventMove" listener="#{agendamentoBean.onEventMove}" update=":messages"/>
+
+                    </p:schedule>
+                </h:panelGrid>               
+
+                <p:dialog widgetVar="eventDialog" header="tela de cadastro de agendamento" showEffect="clip" hideEffect="clip"
+                          modal="true">                       
+
+                    <h:panelGrid id="eventDetails" columns="2" cellspacing="10">                       
+
+                        <comps:outputLabel id="panel-add-agendamento-pg-ot-paciente" value="Paciente" required="true"/>
+                        <p:selectOneMenu id="panel-add-agendamento-pg-som-paciente" value="#{agendamentoBean.tbagendamento.idcliente}"
+                                         converter="converterEntity" required="true" requiredMessage="paciente obrigatorio."
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="Selecione um cliente"/>
+                            <f:selectItems value="#{agendamentoBean.listTbclientes}" var="cliente"
+                                           itemValue="#{cliente}" itemLabel="#{cliente.nmcliente}"/>
+                            <p:ajax event="change" process="@this"/>
+                        </p:selectOneMenu>
+
+                        <comps:outputLabel id="panel-add-agendamento-pg-ot-especialidade" value="Especialidade" required="true"/>
+                        <p:selectOneMenu id="panel-add-agendamento-pg-som-especialidade" value="#{agendamentoBean.tbagendamento.idespecialidade}"
+                                         converter="converterEntity" required="true" requiredMessage="especialidade obrigatorio."
+                                         filter="true" filterMatchMode="contains">                            
+                            <f:selectItems value="#{agendamentoBean.listTbespecialidades}" var="especialidade"
+                                           itemValue="#{especialidade}" itemLabel="#{especialidade.nmespecialidade}"/>
+                            <p:ajax event="change" update="panel-add-agendamento-pg-som-subespecialidade" process="@this"
+                                    listener="#{agendamentoBean.atualizaListSubEspecialidadeByEspecialidade()}"/>
+                        </p:selectOneMenu>
+
+                        <comps:outputLabel id="panel-add-agendamento-pg-ot-subespecialidade" value="Sub-especialidade" required="true"/>
+                        <p:selectOneMenu id="panel-add-agendamento-pg-som-subespecialidade" value="#{agendamentoBean.tbagendamento.idsubespecialidade}"
+                                         converter="converterEntity" required="true" requiredMessage="Sub-especialidade obrigatorio."
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="Selecione uma sub-especialidade"/>
+                            <f:selectItems value="#{agendamentoBean.listTbsubespecialidades}" var="subespecialidade"
+                                           itemValue="#{subespecialidade}" itemLabel="#{subespecialidade.nmsubespecialidade}"/>
+                            <p:ajax event="change" update="panel-add-agendamento-pg-som-profissional" process="@this"
+                                    listener="#{agendamentoBean.updateListEmployeeBySubEspecialidade()}"/>
+                        </p:selectOneMenu>
+
+                        <comps:outputLabel id="panel-add-agendamento-pg-ot-profissional" value="Profissional" required="true"/>
+                        <p:selectOneMenu id="panel-add-agendamento-pg-som-profissional" value="#{agendamentoBean.tbagendamento.idfuncionario}"
+                                         converter="converterEntity" required="true" requiredMessage="Funcionario obrigatorio."
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="Selecione uma profissional"/>
+                            <f:selectItems value="#{agendamentoBean.listTbfuncionarios}" var="funcionario"
+                                           itemValue="#{funcionario}" itemLabel="#{funcionario.nmfuncionario}"/>                            
+                        </p:selectOneMenu>
+
+                        <comps:outputLabel id="panel-add-agendamento-form-ot-data" value="Data" required="true"/>
+                        <p:calendar id="panel-add-agendamento-form-calendar-data" value="#{agendamentoBean.tbagendamento.tmdataagendamento}" 
+                                    pattern="dd/MM/yyyy HH:mm" timeZone="GMT-4"
+                                    style="width: 250px;" timeControlType="select"/>                         
+
+                    </h:panelGrid> 
+
+                    <div class="space"/>
+
+                    <p:commandButton id="button-salva-agendamento" value="#{field.salvar}" 
+                                     actionListener="#{agendamentoBean.addEvent}"
+                                     icon="ui-icon-disk"
+                                     oncomplete="PF('eventDialog').hide();PF('scheduleAgendamento').update();"/>
+
+                    <p:spacer width="10px"/>
+
+                    <p:commandButton id="button-voltar-list-agendamento" value="#{field.voltar}"                                          
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" 
+                                     onclick="PF('eventDialog').hide();"/>
+
+
+                </p:dialog>
+
+            </h:form>        
+
+            <p:dialog id="dialogAgendamento" header="Atualizar status" widgetVar="agendamentoDialog" 
+                      showEffect="fade" hideEffect="fade" resizable="false" modal="true">                       
+
+                <h:form>
+                    <h:panelGrid id="dialogAgendamento-pg" columns="2" rendered="#{not empty agendamentoBean.listTbagendamentos}"
+                                 cellspacing="10">
+
+                        <comps:outputLabel id="dialogAgendamento-pg-ot-paciente" value="Paciente" required="true"/>
+                        <h:outputText id="dialogAgendamento-pg-ot-paciente-value" value="#{agendamentoBean.tbagendamentoSelected.idcliente.nmcliente}"/>
+
+                        <comps:outputLabel id="dialogAgendamento-form-ot-data" value="Data" required="true"/>
+                        <h:outputText id="dialogAgendamento-form-ot-data-value" value="#{agendamentoBean.tbagendamentoSelected.tmdataagendamento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="GMT-4"/>
+                        </h:outputText>                   
+
+                        <comps:outputLabel id="dialogAgendamento-pg-ot-status" value="#{field.status}" required="true"/>                            
+                        <p:selectOneMenu id="dialogAgendamento-pg-som-status" value="#{agendamentoBean.tbtipostatusagendamento}"
+                                         converter="converterEntity">                                
+                            <f:selectItems value="#{agendamentoBean.listTbtipostatusagendamentos}" var="status"
+                                           itemValue="#{status}" itemLabel="#{status.nmdesctipostatusagendamento}"/>
+                        </p:selectOneMenu>                           
+
+                        <p:commandButton id="confirmDialog-button" value="#{field.salvar}"                                         
+                                         actionListener="#{agendamentoBean.addEvent}"
+                                         oncomplete="PF('agendamentoDialog').hide();PF('scheduleAgendamento').update();"
+                                         icon="ui-icon-disk"/>  
+
+                        <p:commandButton id="declineDialog-button" value="#{field.cancelar}" 
+                                         onclick="PF('agendamentoDialog').hide();" type="button" 
+                                         icon="ui-icon-arrowreturnthick-1-w"/>
+
+                    </h:panelGrid> 
+                </h:form>                
+
+            </p:dialog>
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>
+

@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:form>      
+
+        <p:toolbar style="padding-top: 0px;margin-top: 0px;">                        
+
+            <f:facet name="left">               
+                <p:commandButton id="menuButton" styleClass="show_hide" 
+                                 action="#{menuBean.defineDisplayMenu()}" immediate="true" 
+                                 value="Menu" icon="ui-icon-menu" 
+                                 title="Show/Hide Menu"/>
+                <p:autoComplete id="autoComplete" value="#{menuBean.nmmenu}" completeMethod="#{menuBean.autoComplete}" 
+                                var="item" itemValue="#{item}" 
+                                itemLabel="#{item}" forceSelection="true" onselect="true" scrollHeight="350" 
+                                size="40" dropdown="true">
+                    <p:ajax event="itemSelect" listener="#{menuBean.redirectToPage()}" update="@all"/>
+                </p:autoComplete>
+                <p:watermark for="autoComplete" value="Pesquisar" />
+            </f:facet>         
+
+            <f:facet name="right">                
+                <p:clock pattern="HH:mm dd/MM/yyyy" mode="server" />
+
+                <span class="ui-separator">
+                    <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                </span> 
+
+                <p:commandButton icon="ui-icon-person" title="visualizar os detalhes do seu usuario" 
+                                 value="#{shareds.getUser().nmnomeusuario}" 
+                                 action="/faces/cadastrosadministrativos/usuario/meusDados.xhtml" ajax="false">
+                    <f:param id="param" name="user" value="#{shareds.getUser().idusuario}"/>
+                </p:commandButton>                
+
+                <span class="ui-separator">
+                    <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                </span>                
+
+                <p:commandButton value="#{field.paginainicial}" title="volta para a pagina inicial" 
+                                 icon="ui-icon-home" action="/faces/index.xhtml?faces-redirect=true" 
+                                 ajax="false"/>
+                <p:commandButton value="#{field.sair}" title="encerrar sua sessao no sistema" 
+                                 icon="ui-icon-logout" action="#{shareds.logout()}" ajax="false"/>
+
+            </f:facet>
+
+        </p:toolbar>             
+    </h:form>
+
+</ui:fragment>

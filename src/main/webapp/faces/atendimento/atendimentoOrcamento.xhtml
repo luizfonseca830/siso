@@ -1,0 +1,689 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:comps="http://xmlns.jcp.org/jsf/composite/comps">
+
+    <ui:define name="context">           
+
+        <style>
+            .ui-panelgrid .ui-panelgrid-cell{border-width:0px;border-style:none;border-color:inherit;padding:0px 0px;display: flex;}
+        </style>
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('atendimento')}"/>       
+
+        <h:body onload="#{odontogramaBean.loadInfoAtendimentoOrcamento()}">
+
+            <div class="page-title">Atendimento</div>
+
+            <p:panel id="panel-odonto-atendimento" header="#{field.parametrodepesquisa}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="panel-odonto-atendimento-form">
+
+                    <h:panelGrid columns="4" cellspacing="10">
+
+                        <h:outputText id="panel-orcamento-form-ot-data" value="Paciente" class="text-bold"/>
+                        <h:outputText id="panel-orcamento-form-ot-data-value" 
+                                      value="#{odontogramaBean.tborcamento.idagendamento.idcliente.nmcliente}"/>
+
+                        <h:outputText id="panel-orcamento-form-ot-dtnascimento" value="Data nascimento" class="text-bold"/>
+                        <h:outputText id="panel-orcamento-form-ot-dtnascimento-value" 
+                                      value="#{odontogramaBean.tborcamento.idcliente.dtnascimento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+
+                        <h:outputText id="panel-orcamento-form-ot-cliente" value="Data agendamento" class="text-bold"/>
+                        <h:outputText id="panel-orcamento-form-ot-cliente-value" 
+                                      value="#{odontogramaBean.tborcamento.idagendamento.tmdataagendamento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="GMT-04:00"/>
+                        </h:outputText>
+
+                        <h:outputText id="panel-orcamento-form-ot-funcionario" value="Consulta" class="text-bold"/>
+                        <h:outputText id="panel-orcamento-form-ot-funcionario-value"
+                                      value="#{odontogramaBean.tborcamento.idagendamento.intipo == 0 ? 'Agendamento':'Orçamento'}"/>
+
+                    </h:panelGrid>
+
+                    <div class="space"/>
+
+                    <p:commandButton id="fechar-atendimento" value="Finalizar atendimento" icon="ui-icon-close"
+                                     onclick="PF('fimAtendimento').show();"/>                    
+
+                    <p:commandButton id="voltar-list-atendimento" value="#{field.cancelar}"
+                                     action="atendimentoListTest.xhtml" immediate="true"
+                                     onclick="PF('statusDialog').show();" icon="ui-icon-cancel"/>
+
+                    <div class="space"/>
+
+                    <p:tabView id="tabView-procedimentos">
+                        <p:tab id="prontuario" title="Prontuario">
+                            <h:outputText value="Lorem" />
+                        </p:tab>
+                        <p:tab id="lista-procedimentos" title="Lista de Procedimento">                                                       
+
+                            <p:dataTable id="dataTable-procedimentos" value="#{odontogramaBean.listTbprocedimentosGeral}" var="procedimentos" 
+                                         paginator="true" paginatorPosition="bottom"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="10,15,20" emptyMessage="#{message.nenhumresultadoencontrado}"
+                                         rowIndexVar="index" widgetVar="procedimentosGeral">
+
+                                <p:column headerText="#">
+                                    <h:outputText value="#{index + 1}"/>
+                                </p:column>
+
+                                <p:column headerText="Dente">
+                                    <h:outputText value="#{procedimentos.iddente.nrposicao}"/>
+                                </p:column>
+
+                                <p:column headerText="Procedimento">
+                                    <h:outputText value="#{procedimentos.idservico.nmservico}"/>
+                                </p:column>
+
+                                <p:column headerText="Face">
+                                    <h:outputText value="#{procedimentos.iddente.nmdente}"/>
+                                </p:column>
+
+                                <p:column headerText="Quantidade">
+                                    <h:outputText value="#{procedimentos.qtprocedimento}"/>
+                                </p:column>                                                              
+
+                                <p:column headerText="Profissional">
+                                    <h:outputText value="#{procedimentos.idsolicitante}"/>
+                                </p:column>
+
+                                <p:column style="width:32px;text-align: center">
+                                    <p:commandLink>
+                                        <p:graphicImage value="#{resource['images/delete.gif']}" onclick="PF('confirmation').show();"/>
+                                        <f:setPropertyActionListener value="#{procedimentos}" target="#{odontogramaBean.tbprocedimentoToRemove}"/>                                        
+                                    </p:commandLink>
+                                </p:column>
+
+                            </p:dataTable>
+
+                            <div class="space"/>
+
+                            <p:commandButton value="#{field.adicionar}" icon="ui-icon-plusthick" 
+                                             onclick="PF('procedimentoDialog').show();" immediate="true"/>                           
+
+                            <p:confirmDialog id="confirmDialog" message="Deseja deletar este procedimento ?"
+                                             header="Tela para excluir procedimento" severity="alert" widgetVar="confirmation">  
+
+                                <p:commandButton id="confirm" value="#{field.sim}"
+                                                 update=":panel-odonto-atendimento-form,:messages"
+                                                 action="#{odontogramaBean.removeTbprocedimentoOrcamento()}"
+                                                 oncomplete="PF('confirmation').hide();
+                                                 PF('procedimentosGeral').update();" ajax="false"
+                                                 icon="ui-icon-check"/>  
+                                <p:commandButton id="decline" value="#{field.nao}" onclick="PF('confirmation').hide();" 
+                                                 type="button" icon="ui-icon-close"/>   
+                            </p:confirmDialog>
+
+                        </p:tab>
+                        <p:tab id="odontograma" title="Odontograma">
+                            <h:panelGrid columns="4" cellspacing="10">
+
+                                <h:outputText value="Especialidade" class="text-bold"/>
+                                <p:selectOneMenu value="#{odontogramaBean.tbsubespecialidade}" converter="converterEntity"
+                                                 filter="true" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Selecione um especialidade."/>
+                                    <f:selectItems value="#{odontogramaBean.listTbsubespecialidades}" var="subespecialidade"
+                                                   itemValue="#{subespecialidade}" itemLabel="#{subespecialidade.nmsubespecialidade}"/>
+                                    <p:ajax event="change" listener="#{odontogramaBean.atualizaListaTbServicos()}"
+                                            update="servicos"/>
+                                </p:selectOneMenu>                                    
+
+                                <h:outputText value="Procedimento" class="text-bold"/>
+                                <p:selectOneMenu id="servicos" value="#{odontogramaBean.tbservico}" converter="converterEntity"
+                                                 filter="true" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Selecione um procedimento."/>
+                                    <f:selectItems value="#{odontogramaBean.listTbservicos}" var="servico"
+                                                   itemValue="#{servico}" itemLabel="#{servico.nmservico}"/>
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+
+                            <p:tabView id="odontogramaAdultoInfantil">
+                                <p:tab id="odontogramaAdulto" title="Adulto">
+                                    <h:panelGrid id="panelGridOdontogramaAdulto" columns="1">
+                                        <table id="table">                        
+                                            <tr>
+                                                <ui:repeat value="#{odontogramaBean.listDentesSuperioresOrcamento}" var="dente"
+                                                           id="superior">
+                                                    <td>
+                                                        <p:panelGrid>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <h:outputText value="#{dente.nrDente}" class="text-bold"/>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="raiz_superior#{dente.nrDente}" value="#{dente.listFacesDente.get(0).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(0).nmFace}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(0).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="0" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>                                                            
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="cervical#{dente.nrDente}" value="#{dente.listFacesDente.get(1).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(1).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(1).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="1" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="vestibular#{dente.nrDente}" value="#{dente.listFacesDente.get(2).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(2).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(2).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="2" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column colspan="3" class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="distal#{dente.nrDente}" value="#{dente.listFacesDente.get(3).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(3).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(3).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="3" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="oclusal#{dente.nrDente}" value="#{dente.listFacesDente.get(4).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(4).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(4).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="4" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="mesial#{dente.nrDente}" value="#{dente.listFacesDente.get(5).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(5).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(5).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="5" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr> 
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="palatina#{dente.nrDente}" value="#{dente.listFacesDente.get(6).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(6).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(6).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="6" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                        </p:panelGrid>
+                                                    </td>                                                    
+                                                </ui:repeat>
+                                            </tr>
+                                            <tr>
+                                                <ui:repeat id="inferior" value="#{odontogramaBean.listDentesInferioresOrcamento}" 
+                                                           var="denteInferior">
+                                                    <td>
+                                                        <p:panelGrid>
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="raiz_superior#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(0).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(6).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(0).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="6" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column colspan="3" class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="distal#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(1).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(1).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(1).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="1" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="oclusal#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(2).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(2).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(2).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="2" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="mesial#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(3).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(3).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(3).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="3" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="cervical#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(4).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(4).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(4).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="4" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="vestibular#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(5).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(5).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(5).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="5" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="palatina#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(6).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(6).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(6).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="6" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <h:outputText value="#{denteInferior.nrDente}" class="text-bold"/>
+                                                                </p:column>
+                                                            </tr>
+                                                        </p:panelGrid>                                    
+                                                    </td>                                
+                                                </ui:repeat>
+                                            </tr>
+                                        </table>
+                                    </h:panelGrid>
+                                </p:tab>
+                                <p:tab id="odontogramaInfantil" title="Infantil">
+                                    <h:panelGrid id="panelGridOdontogramaInfantil" columns="1">
+                                        <table id="tableInfantil">                        
+                                            <tr>
+                                                <ui:repeat value="#{odontogramaBean.listDentesSuperioresInfantilOrcamento}" var="dente"
+                                                           id="superiorInfantil">
+                                                    <td>
+                                                        <p:panelGrid>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <h:outputText value="#{dente.nrDente}" class="text-bold"/>
+                                                                </p:column>
+                                                            </tr>                                       
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="raiz_superior#{dente.nrDente}" value="#{dente.listFacesDente.get(0).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(0).nmFace}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(0).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="0" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="cervical#{dente.nrDente}" value="#{dente.listFacesDente.get(1).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(1).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(1).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="1" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>                                         
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="vestibular#{dente.nrDente}" value="#{dente.listFacesDente.get(2).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(2).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(2).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="2" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column colspan="3" class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="distal#{dente.nrDente}" value="#{dente.listFacesDente.get(3).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(3).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(3).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="3" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="oclusal#{dente.nrDente}" value="#{dente.listFacesDente.get(4).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(4).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(4).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="4" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="mesial#{dente.nrDente}" value="#{dente.listFacesDente.get(5).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(5).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(5).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="5" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="palatina#{dente.nrDente}" value="#{dente.listFacesDente.get(6).urlImageFace}"
+                                                                                        title="#{dente.listFacesDente.get(6).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.nrDente}" target="#{odontogramaBean.denteSelected}"/>
+                                                                        <f:setPropertyActionListener value="#{dente.listFacesDente.get(6).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="6" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                        </p:panelGrid>                                    
+                                                    </td>                                
+                                                </ui:repeat>
+                                            </tr>
+                                            <tr>
+                                                <ui:repeat id="inferiorInfantil" value="#{odontogramaBean.listDentesInferioresInfantilOrcamento}" 
+                                                           var="denteInferior">
+                                                    <td>
+                                                        <p:panelGrid>                                        
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="raiz_superior#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(0).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(6).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(0).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="6" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column colspan="3" class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="distal#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(1).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(1).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(1).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="1" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="oclusal#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(2).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(2).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(2).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="2" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="mesial#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(3).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(3).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(3).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="3" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column class="linha">
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true" class="linha">
+                                                                        <p:graphicImage id="cervical#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(4).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(4).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(4).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="4" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="vestibular#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(5).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(5).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(5).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="5" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <p:commandLink update=":dialogOdontograma" oncomplete="PF('odontogramaDialog').show();"
+                                                                                   action="#{odontogramaBean.loadProcedimentosPorDenteOrcamento()}"
+                                                                                   async="true">
+                                                                        <p:graphicImage id="palatina#{denteInferior.nrDente}" value="#{denteInferior.listFacesDente.get(6).urlImageFace}"
+                                                                                        title="#{denteInferior.listFacesDente.get(6).nmFace}"/>
+                                                                        <f:setPropertyActionListener value="#{denteInferior.nrDente}" target="#{odontogramaBean.denteSelected}"/>                                            
+                                                                        <f:setPropertyActionListener value="#{denteInferior.listFacesDente.get(6).nrFace}" target="#{odontogramaBean.faceSelected}"/>
+                                                                        <f:setPropertyActionListener value="6" target="#{odontogramaBean.posicao}"/>
+                                                                    </p:commandLink>
+                                                                </p:column>
+                                                            </tr>
+                                                            <tr>
+                                                                <p:column>
+                                                                    <h:outputText value="#{denteInferior.nrDente}" class="text-bold"/>
+                                                                </p:column>
+                                                            </tr>
+                                                        </p:panelGrid>                                    
+                                                    </td>                                
+                                                </ui:repeat>
+                                            </tr>
+                                        </table>
+                                    </h:panelGrid>
+                                </p:tab>
+                            </p:tabView>
+                        </p:tab>
+                    </p:tabView>
+
+                    <p:confirmDialog id="confirmDialogFimAtendimento" message="Deseja finalizar este atendimento ?"
+                                     header="Tela para finalizar atendimento" severity="alert" widgetVar="fimAtendimento">  
+
+                        <p:commandButton id="confirm" value="#{field.sim}" ajax="false"                                    
+                                         action="#{odontogramaBean.finalizarAtendimento(false)}"
+                                         oncomplete="PF('fimAtendimento').hide(); PF('statusDialog').hide();" icon="ui-icon-check"
+                                         onclick="PF('statusDialog').show();"/>  
+                        <p:commandButton id="decline" value="#{field.nao}" onclick="PF('fimAtendimento').hide();" 
+                                         type="button" icon="ui-icon-close"/>   
+                    </p:confirmDialog>
+
+                </h:form>               
+
+                <p:dialog id="dialogProcedimento" header="Incluir procedimento" widgetVar="procedimentoDialog" 
+                          showEffect="fade" hideEffect="fade" resizable="true" modal="true">                       
+                    <h:form>
+                        <h:panelGrid id="dialogProcedimento-pg" columns="2" 
+                                     cellspacing="10">
+
+                            <comps:outputLabel id="dialogAgendamento-pg-ot-servico" value="Procedimento" required="true"/>
+                            <p:selectOneMenu id="dialogAgendamento-pg-som-servico-value" value="#{odontogramaBean.tbservicoManual}"
+                                             converter="converterEntity" filter="true"
+                                             filterMatchMode="contains" required="true"
+                                             requiredMessage="Procedimento é um campo obrigatório">                           
+                                <p:ajax event="change" process="@this"/>    
+                                <f:selectItem itemLabel="Selecione um procedimento. "/>                                
+                                <f:selectItems value="#{odontogramaBean.listTbservicos}" var="servico"
+                                               itemValue="#{servico}" itemLabel="#{servico.nmservico}"/>
+                            </p:selectOneMenu>
+
+                            <comps:outputLabel id="dialogAgendamento-pg-ot-dente" value="Dente" required="true"/>
+                            <p:selectOneMenu id="dialogAgendamento-pg-ot-dente-value" converter="converterEntity"
+                                             value="#{odontogramaBean.tbdente}" filter="true"
+                                             filterMatchMode="contains" required="true"
+                                             requiredMessage="Dente é um campo obrigatório">
+                                <p:ajax event="change" process="@this"/>
+                                <f:selectItem itemLabel="Selecione um dente. "/> 
+                                <f:selectItems value="#{odontogramaBean.listTbdentes}" var="dente"
+                                               itemValue="#{dente}" itemLabel="#{dente.nrposicao}"/>
+                            </p:selectOneMenu>
+
+                            <comps:outputLabel id="dialogAgendamento-pg-ot-face" value="Face" required="true"/>
+                            <p:selectOneMenu id="dialogAgendamento-pg-ot-face-value" value="#{odontogramaBean.inFace}"
+                                             filter="true" filterMatchMode="contains"
+                                             required="true" requiredMessage="Face é uma campo obrigatório">
+                                <p:ajax event="change" process="@this"/>
+                                <f:selectItem itemLabel="Selecione uma face. "/> 
+                                <f:selectItems value="#{odontogramaBean.listFacesDentes}"/>
+                            </p:selectOneMenu>
+
+                            <comps:outputLabel value="Quantidade" required="true"/>
+                            <p:inputText value="#{odontogramaBean.qtProcedimento}" required="true"
+                                         requiredMessage="Quantidade precisa ser maior ou igual a (1)."/>                           
+
+                        </h:panelGrid>
+
+
+                        <p:commandButton id="confirmDialog-button" value="#{field.salvar}"
+                                         update=":panel-odonto-atendimento-form,:messages" ajax="false"
+                                         actionListener="#{odontogramaBean.criarProcedimentoManual()}"
+                                         oncomplete="PF('procedimentoDialog').hide(), PF('statusDialog').hide()"
+                                         icon="ui-icon-check" onclick="PF('statusDialog').show();"/>  
+
+                        <p:commandButton id="declineDialog-button" value="#{field.cancelar}" 
+                                         onclick="PF('procedimentoDialog').hide();" type="button" 
+                                         icon="ui-icon-close"/>
+                    </h:form>                                                
+
+                </p:dialog>
+
+                <p:dialog id="dialogOdontograma" header="Tela de procedimentos por dente" widgetVar="odontogramaDialog" 
+                          showEffect="fade" hideEffect="fade" resizable="true" modal="true" width="600px">                       
+
+                    <h:form>
+
+                        <h:outputText value="Nenhum procedimento adicionado para o dente #{odontogramaBean.denteSelected} face #{odontogramaBean.nmFaceSelected}" 
+                                      class="text-bold" rendered="#{empty odontogramaBean.listTbprocedimentosPorDente}"/>
+
+                        <p:dataTable id="dataTable-procedimentos-por-dente" value="#{odontogramaBean.listTbprocedimentosPorDente}" var="procedimentos"                                     
+                                     rowIndexVar="index" widgetVar="procedimentosDente"
+                                     rendered="#{not empty odontogramaBean.listTbprocedimentosPorDente}">
+
+                            <p:column headerText="#" style="width:32px;text-align: center">
+                                <h:outputText value="#{index + 1}"/>
+                            </p:column>
+
+                            <p:column headerText="Dente">
+                                <h:outputText value="#{procedimentos.iddente.nrposicao}"/>
+                            </p:column>
+
+                            <p:column headerText="Procedimento">
+                                <h:outputText value="#{procedimentos.idservico.nmservico}"/>
+                            </p:column>
+
+                            <p:column headerText="Face">
+                                <h:outputText value="#{procedimentos.iddente.nmdente}"/>
+                            </p:column>                           
+
+                            <p:column style="width:32px;text-align: center">
+                                <p:commandLink action="#{odontogramaBean.removeTbprocedimentoOrcamento()}" ajax="false"
+                                               oncomplete="PF('procedimentosGeral').update();">
+                                    <p:graphicImage value="#{resource['images/delete.gif']}"/>
+                                    <f:setPropertyActionListener value="#{procedimentos}" target="#{odontogramaBean.tbprocedimentoToRemove}"/>                                        
+                                </p:commandLink>
+                            </p:column>
+
+                        </p:dataTable>                       
+
+                        <div class="space"/>
+
+                        <p:commandButton id="confirmDialog-button" value="#{field.salvar}"
+                                         update="odontogramaTest, :messages" ajax="false"
+                                         action="#{odontogramaBean.adicionarOrcamentoOdontograma()}"
+                                         oncomplete="PF('odontogramaDialog').hide()"
+                                         icon="ui-icon-check">
+                            <f:param name="nrDente" value="#{odontogramaBean.denteSelected}"/>                            
+                            <f:param name="nrFace" value="#{odontogramaBean.faceSelected}"/>
+                            <f:param name="nrPosicao" value="#{odontogramaBean.posicao}"/>
+                            <f:param name="idServico" value="#{odontogramaBean.tbservico.idservico}"/>
+                        </p:commandButton>  
+
+                        <p:commandButton id="declineDialog-button" value="#{field.cancelar}" 
+                                         onclick="PF('odontogramaDialog').hide();" type="button" 
+                                         icon="ui-icon-close"/>
+                    </h:form>
+
+                </p:dialog>
+
+            </p:panel>          
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>
+

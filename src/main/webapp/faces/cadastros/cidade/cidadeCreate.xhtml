@@ -1,0 +1,37 @@
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('cad_cidade')}"/>   
+        <h:body>
+            <div class="page-title">#{field.cidade}</div>
+            <p:panel id="panel-add-cidade" header="#{field.adicionar}" toggleable="true" toggleSpeed="500">
+                <h:form id="form-add-cidade">
+                    <h:panelGrid id="panel-add-cidade-pg" columns="2" cellspacing="10">
+                        <h:outputText id="panel-add-cidade-pg-ot-nome" value="#{field.cidade}" class="text-bold"/>
+                        <p:inputText id="panel-add-cidade-it-nome" value="#{cidadeBean.tbcidade.nmcidade}" required="true" requiredMessage="#{message.camponaopodeservazio}" style="width: 250px;"/>
+                      
+                        <h:outputText id="panel-edit-cidade-pg-ot-estado" value="#{field.estado}" class="text-bold"/>
+                        <p:inputMask mask="aa"  size="2" value="#{cidadeBean.tbcidade.nmuf}" requiredMessage="#{message.camponaopodeservazio}"/>
+
+
+                    </h:panelGrid>
+                    <div class="space"/>
+                    <p:commandButton value="#{field.salvar}" action="#{cidadeBean.createCidade()}" 
+                                     onclick="PF('statusDialog').show();" ajax="false"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                    <p:spacer width="10px"/>
+                    <p:commandButton value="#{field.cancelar}" action="cidadeList.jsf" icon="ui-icon-arrowreturnthick-1-w" 
+                                     immediate="true" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                </h:form>
+
+            </p:panel>
+        </h:body>
+    </ui:define>        
+</ui:composition>       

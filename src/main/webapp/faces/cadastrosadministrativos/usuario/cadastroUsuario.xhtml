@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('usuario')}"/>
+
+        <h:body>            
+
+            <div class="page-title">#{field.usuario}</div>
+
+            <p:panel header="#{field.cadastrodeusuario}">
+                <h:form id="cadastro">
+                    <h:panelGrid columns="2" cellspacing="10" cellpadding="10">
+                        <h:outputText value="#{field.usuario}" class="text-bold"/>
+                        <p:inputText id="Usuário" value="#{cadastroUsuarioBean.nome}" style="width: 200px;" required="true"/>
+
+                        <h:outputText value="#{field.login}" class="text-bold"/>
+                        <p:inputText id="Login" value="#{cadastroUsuarioBean.login}" maxlength="12" required="true"/>
+
+                        <h:outputText value="#{field.senha}" class="text-bold"/>
+                        <p:password id="Senha1" value="#{cadastroUsuarioBean.senha}" match="Senha" 
+                                    maxlength="20" feedback="true" goodLabel="#{field.boa}" weakLabel="#{field.razoavel}"
+                                    strongLabel="#{field.excelente}" 
+                                    validatorMessage="#{message.digiteamesmasenhanocampoconfirmarsenha}" />
+
+                        <h:outputText value="#{field.confirmarsenha}" class="text-bold"/>
+                        <p:password id="Senha" value="#{cadastroUsuarioBean.senha}" maxlength="20" />
+
+                        <h:outputText value="#{field.cracha}" class="text-bold"/>
+                        <p:inputText id="Crachá" value="#{cadastroUsuarioBean.cracha}"/>
+                        
+                            <h:outputText value="Data de Expiração de acesso" class="text-bold"/>
+                            <p:calendar id="Dataexpiracao" value="#{cadastroUsuarioBean.tmdataexpiracao}"
+                                    pattern="dd-MM-yyyy" mask="true" required="true"
+                                    requiredMessage="Data de expiração obrigatoria"
+                                    style="width: 250px;">
+                            <p:ajax process="@this"/>
+                        </p:calendar>
+
+                        <h:outputText value="#{field.nomedoperfil}" class="text-bold"/>
+                        <p:autoComplete id="autoComplete" value="#{cadastroUsuarioBean.tbperfil}" 
+                                        completeMethod="#{cadastroUsuarioBean.autoCompleteByPerfil}"
+                                        forceSelection="true" var="perfil" itemValue="#{perfil}" 
+                                        itemLabel="#{perfil.nmperfil}" converter="converterEntity" dropdown="true" 
+                                        scrollHeight="250"/>
+
+                        <p:commandButton value="#{field.salvar}" action="#{cadastroUsuarioBean.criarUsuario()}" ajax="false" 
+                                         icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()" />
+                        <p:commandButton value="#{field.voltar}" action="/faces/cadastrosadministrativos/usuario/usuarioList.xhtml" 
+                                         immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+
+                    </h:panelGrid>
+                </h:form>
+            </p:panel>
+
+        </h:body>
+    </ui:define>
+</ui:composition>

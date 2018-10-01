@@ -1,0 +1,59 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('perfil')}"/>
+
+        <h:body>
+
+            <div class="page-title">#{field.perfil}</div>
+
+            <p:panel header="#{field.adicionar}" rendered="#{perfilBean.tbperfil.nmperfil == null}" toggleable="true"
+                     toggleSpeed="500">
+
+                <h:form>
+
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <h:outputText value="#{field.nomedoperfil}" class="text-bold"/>
+                        <p:inputText value="#{perfilBean.tbperfil.nmperfil}" required="true" 
+                                     requiredMessage="#{message.camponaopodeservazio}" style="width: 250px;"/>
+                        <p:commandButton value="#{field.adicionar}" action="#{perfilBean.create()}" 
+                                         onclick="PF('statusDialog').show();" ajax="false"
+                                         oncomplete="PF('statusDialog').hide()"/>
+                        <p:commandButton value="#{field.voltar}" action="PerfilList.xhtml" icon="ui-icon-arrowreturnthick-1-w" 
+                                         immediate="true" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+                    </h:panelGrid>
+
+                </h:form>
+
+            </p:panel>
+
+            <p:panel header="#{field.editar}" rendered="#{perfilBean.tbperfil.nmperfil != null}"
+                     toggleable="true" toggleSpeed="500">
+                <h:form>
+
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <h:outputText value="#{field.nomedoperfil}" class="text-bold"/>
+                        <p:inputText value="#{perfilBean.tbperfil.nmperfil}" required="true"
+                                     requiredMessage="#{message.camponaopodeservazio}" style="width: 250px;"/>
+                        <p:commandButton value="#{field.salvar}" action="#{perfilBean.edit()}" ajax="false" 
+                                         onclick="PF('statusDialog').show();" oncomplete="PF('statusDialog').hide()"/>
+                        <p:commandButton value="#{field.voltar}" action="PerfilList.xhtml" 
+                                         icon="ui-icon-arrowreturnthick-1-w" immediate="true" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+                    </h:panelGrid>
+
+                </h:form>
+            </p:panel> 
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">       
+
+    <ui:define name="context">           
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('agendamento')}"/>       
+
+        <h:body>
+
+            <div class="page-title">Agendamento</div>
+
+            <p:panel id="panel-agendamento" header="dados do agendamento" toggleable="true" toggleSpeed="500">
+
+                <h:form id="form-agendamento">
+
+                    <h:panelGrid id="panel-agendamento-pg" columns="2" cellspacing="10">
+
+                        <h:outputText id="panel-agendamento-pg-ot-status" value="#{field.status} *" class="text-bold"/>
+                        <h:outputText id="panel-agendamento-pg-ot-vstatus"
+                                      value="#{agendamentoBean.tbagendamento.idtipostatusagendamento.nmdesctipostatusagendamento}"/>                        
+
+                        <h:outputText id="panel-agendamento-pg-ot-hrmarcada" value="Hora marcada *" class="text-bold"/>
+                        <h:outputText id="panel-agendamento-pg-ot-vhrmarcada" 
+                                      value="#{webBeanUtils.formatHourMinutes(agendamentoBean.tbagendamento.tmdataagendamento)}"/>
+
+
+                        <h:outputText id="panel-agendamento-pg-ot-dtagendamento" value="Data agendamento *" class="text-bold"/>
+                        <h:outputText id="panel-agendamento-pg-ot-vdtagendamento" 
+                                      value="#{webBeanUtils.formatDtBr(agendamentoBean.tbagendamento.tmdataagendamento)}"/>
+
+
+                        <h:outputText id="panel-agendamento-pg-ot-nmpaciente" value="Nome paciente *" class="text-bold"/>
+                        <h:outputText id="panel-agendamento-pg-ot-vnmpaciente" 
+                                      value="#{agendamentoBean.tbagendamento.idcliente.nmcliente}"/>
+
+
+                        <h:outputText id="panel-agendamento-pg-ot-especialidade" value="Especialidade *" class="text-bold"/>
+                        <h:outputText id="panel-agendamento-pg-ot-vespecialidade" 
+                                      value="#{agendamentoBean.tbagendamento.idespecialidade.nmespecialidade}"/>
+
+                        <h:outputText id="panel-agendamento-pg-ot-profissional" value="Profissional *" class="text-bold"/>
+                        <h:outputText id="panel-agendamento-pg-ot-vprofissional" 
+                                      value="#{agendamentoBean.tbagendamento.idfuncionario.nmfuncionario}"/>
+
+                    </h:panelGrid> 
+
+                    <div class="space"/>
+
+                    <p:commandButton id="button-agendamentoEdit" value="#{field.editar}" action="agendamentoEdit.xhtml" 
+                                     ajax="false" 
+                                     icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()">
+                        <f:param name="idAgendamento" value="#{agendamentoBean.tbagendamento.idagendamento}"/>
+                    </p:commandButton>
+
+                    <p:spacer width="10px"/>
+
+                    <p:commandButton id="button-voltar-list-agendamento" value="#{field.voltar}" action="agendamentoList.xhtml" 
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                </h:form>
+
+            </p:panel>            
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>
+

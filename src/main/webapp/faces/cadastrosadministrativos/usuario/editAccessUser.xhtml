@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <ui:define name="context">
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('usuario')}"/>             
+        
+        <style>
+            .ui-picklist .ui-picklist-list {
+                width: 350px;
+                height: 300px;
+            }
+            .ui-picklist .ui-picklist-filter-container .ui-icon {right: 10px;}
+            .ui-picklist .ui-picklist-filter {padding-right: 0;width: 346px;}
+        </style>
+        
+        <h:body>
+            
+            <div class="page-title">#{field.usuario}</div>
+            
+            <h:form>
+                <p:panel>
+                    <p:pickList id="pojoPickList" value="#{cadastroUsuarioBean.pickList}" var="acesso"   
+                                itemValue="#{acesso}" itemLabel="#{acesso.idmodulo.nmmodulo}" converter="converterEntity"  
+                                showCheckbox="true"  
+                                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">  
+
+                        <f:facet name="sourceCaption">#{field.acesso}</f:facet>  
+                        <f:facet name="targetCaption">#{field.acessosusuario}</f:facet>  
+
+                        <p:column style="width:100%;">  
+                            #{acesso.idmodulo.nmmodulo} - #{acesso.nmmenu}  
+                        </p:column>  
+
+                    </p:pickList>
+                    <h:panelGrid columns="2" cellspacing="10" cellpadding="10">
+                        <p:commandButton value="#{field.salvar}" action="#{cadastroUsuarioBean.createAccessUser()}" 
+                                         icon="ui-icon-disk" onclick="PF('statusDialog').show();" 
+                                         oncomplete="PF('statusDialog').hide();" />
+
+                        <p:commandButton value="#{field.voltar}" action="/faces/cadastrosadministrativos/usuario/consultarUser.xhtml" 
+                                         immediate="true" icon="ui-icon-arrowreturnthick-1-w" 
+                                         onclick="PF('statusDialog').show();" oncomplete="PF('statusDialog').hide();">
+                            <f:param name="user" value="#{cadastroUsuarioBean.tbusuario.idusuario}"/>
+                        </p:commandButton>
+
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

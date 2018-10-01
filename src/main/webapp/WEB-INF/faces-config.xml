@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <application>
+        <resource-bundle>
+            <base-name>/bundle/field</base-name>            
+            <var>field</var>
+        </resource-bundle>
+        
+        <resource-bundle>
+            <base-name>/bundle/message</base-name>            
+            <var>message</var>
+        </resource-bundle>
+        
+        <resource-bundle>
+            <base-name>/bundle/report</base-name>            
+            <var>report</var>
+        </resource-bundle>
+      
+        <locale-config>
+            <default-locale>pt_BR</default-locale>
+            <supported-locale>pt_BR</supported-locale>
+            <supported-locale>en_US</supported-locale>
+        </locale-config>
+        
+    </application>
+    
+    <managed-bean>  
+        <managed-bean-name>FacesContextUtils</managed-bean-name>  
+        <managed-bean-class>br.com.siso.web.faces.utils.AbstractFacesContextUtils</managed-bean-class>
+            
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>  
+    
+    <navigation-rule>
+        <from-view-id>/faces/*</from-view-id>
+        <navigation-case>
+            <from-outcome>loginPage</from-outcome>
+            <to-view-id>/faces/login.jsf</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <lifecycle>
+        <phase-listener>br.com.siso.web.faces.utils.FaseListener</phase-listener>
+        <phase-listener>br.com.siso.web.faces.utils.MultiPageMessagesSupport</phase-listener>
+    </lifecycle>
+    
+</faces-config>

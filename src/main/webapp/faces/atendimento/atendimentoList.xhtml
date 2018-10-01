@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="context">           
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('atendimento')}"/>       
+
+        <h:body onload="#{odontogramaBean.loadSchedules()}">
+
+            <div class="page-title">Atendimento</div>
+
+            <p:panel id="panel-search-atendimento" header="#{field.parametrodepesquisa}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="panel-search-atendimento-form">
+
+                    <h:panelGrid columns="2" cellspacing="10">
+
+                        <h:outputText id="panel-search-atendimento-form-ot-data" value="Data" class="text-bold"/>
+                        <p:calendar id="panel-search-atendimento-form-calendar-data" value="#{odontogramaBean.dataSearch}" 
+                                    pattern="dd/MM/yyyy" timeZone="GMT-04:00" showOn="button" required="true"
+                                    requiredMessage="data é obrigatorio." navigator="true"
+                                    style="width: 250px;" mode="popup"/>
+
+                        <h:outputText id="panel-search-atendimento-form-ot-cliente" value="#{field.nomedocliente}" 
+                                      class="text-bold"/>
+                        <p:selectOneMenu id="panel-search-atendimento-form-som-cliente" value="#{odontogramaBean.tbcliente}"
+                                         converter="converterEntity" filter="true" filterMatchMode="contains"
+                                         style="width: 250px;"> 
+                            <f:selectItem itemLabel=""/>
+                            <f:selectItems value="#{odontogramaBean.listTbclientes}" var="cliente" 
+                                           itemValue="#{cliente}" itemLabel="#{cliente.nmcliente}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputText id="panel-search-atendimento-form-ot-funcionario" value="Dentista" class="text-bold"/>
+                        <p:selectOneMenu id="panel-search-atendimento-form-som-funcionario" 
+                                         value="#{odontogramaBean.tbfuncionario}"
+                                         converter="converterEntity" filter="true" filterMatchMode="contains"
+                                         style="width: 250px;">  
+                            <f:selectItem itemLabel=""/>
+                            <f:selectItems value="#{odontogramaBean.listTbfuncionarios}" var="funcionario" 
+                                           itemValue="#{funcionario}" itemLabel="#{funcionario.nmfuncionario}"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton id="button-pesquisar-atendimento" value="#{field.pesquisar}" 
+                                         action="#{odontogramaBean.search()}" 
+                                         update=":panel-result-atendimento" icon="ui-icon-search" 
+                                         onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()" ajax="false"/>
+
+                    </h:panelGrid>
+
+                </h:form>
+
+            </p:panel>
+
+            <p:spacer height="10px"/>
+
+            <p:panel id="panel-result-atendimento" header="#{field.resultadosdapesquisa}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="panel-result-atendimento-form">                   
+
+                    <h:panelGrid columns="2" cellspacing="10">                        
+
+                        <p:graphicImage id="presente" value="#{resource['images/status/presente.gif']}" title="Presente"/>
+                        <h:outputText id="presente-ot" value="Presente" class="text-bold"/>
+
+                    </h:panelGrid>
+
+                    <p:dataTable id="dataTable-atendimento" value="#{odontogramaBean.listTbagendamentos}" var="agendamento" 
+                                 paginator="true" paginatorPosition="bottom"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,15,20" emptyMessage="#{message.nenhumresultadoencontrado}"
+                                 scrollable="true" rowIndexVar="index"                              
+                                 scrollHeight="90%"
+                                 resizableColumns="true"
+                                 widgetVar="agendamentos">
+
+                        <p:column headerText="#" style="width:32px;text-align: center">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+
+                        <p:column headerText="#{field.status}" style="width:32px;text-align: center">
+                            <p:graphicImage id="agendaddo" value="#{resource['images/status/liberado.gif']}" 
+                                            title="Agendado" 
+                                            rendered="#{agendamento.idtipostatusagendamento.intipostatusagendamento == 1}"/>
+                            <p:graphicImage id="presente" value="#{resource['images/status/presente.gif']}" 
+                                            title="Presente"
+                                            rendered="#{agendamento.idtipostatusagendamento.intipostatusagendamento == 2}"/>
+                            <p:graphicImage id="atendido" value="#{resource['images/status/atendido.gif']}" 
+                                            title="Atendido"
+                                            rendered="#{agendamento.idtipostatusagendamento.intipostatusagendamento == 3}"/>
+                            <p:graphicImage id="faltoso" value="#{resource['images/status/faltoso.gif']}" 
+                                            title="Faltoso"
+                                            rendered="#{agendamento.idtipostatusagendamento.intipostatusagendamento == 5}"/>
+                        </p:column>
+
+                        <p:column headerText="Nome paciente">
+                            <h:outputText value="#{agendamento.idcliente.nmcliente}"/>
+                        </p:column>
+
+                        <p:column headerText="Tipo de agendamento">
+                            <h:outputText value="#{agendamento.intipo == 0 ? 'Agendamento':'Orçamento'}"/>
+                        </p:column>
+
+                        <p:column headerText="Hora marcada">
+                            <h:outputText value="#{webBeanUtils.formatHourMinutes(agendamento.tmdataagendamento)}"/>
+                        </p:column>
+
+                        <p:column headerText="Data agendamento">
+                            <h:outputText value="#{webBeanUtils.formatDtBr(agendamento.tmdataagendamento)}"/>
+                        </p:column>                        
+
+                        <p:column headerText="Especialidade">
+                            <h:outputText value="#{agendamento.idespecialidade.nmespecialidade}" />                                
+                        </p:column>
+
+                        <p:column headerText="Profissional">
+                            <h:outputText value="#{agendamento.idfuncionario.nmfuncionario}"/>
+                        </p:column>
+
+                        <p:column style="width:32px;text-align: center">
+                            <p:commandButton title="Atender" icon="ui-icon-play" action="atendimentoProcedimento.xhtml"
+                                             onclick="PF('statusDialog').show();"
+                                             oncomplete="PF('statusDialog').hide();"
+                                             rendered="#{agendamento.intipo == 0}">
+                                <f:param name="idAgendamento" value="#{agendamento.idagendamento}"/>
+                                <f:setPropertyActionListener value="#{agendamento}" target="#{odontogramaBean.tbagendamento}"/>
+                            </p:commandButton>
+
+                            <p:commandButton title="Atender" icon="ui-icon-play" action="atendimentoOrcamento.xhtml"
+                                             onclick="PF('statusDialog').show();"
+                                             oncomplete="PF('statusDialog').hide();"
+                                             rendered="#{agendamento.intipo == 1}">
+                                <f:param name="idAgendamento" value="#{agendamento.idagendamento}"/>
+                                <f:setPropertyActionListener value="#{agendamento}" target="#{odontogramaBean.tbagendamento}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column style="width:32px;text-align: center">
+                            <p:commandButton id="ausentarPaciente" title="Ausentar paciente" icon="ui-icon-info"
+                                             action="#{odontogramaBean.ausentarPaciente()}" ajax="false"
+                                             oncomplete="PF('agendamentos').update();">
+                                <f:setPropertyActionListener value="#{agendamento}" target="#{odontogramaBean.tbagendamento}"/>
+                            </p:commandButton>
+
+                        </p:column>
+
+                    </p:dataTable>                    
+                </h:form>
+            </p:panel>
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>
+

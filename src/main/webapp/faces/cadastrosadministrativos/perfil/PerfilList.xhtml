@@ -1,0 +1,83 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('perfil')}"/>
+
+        <h:body>
+            <div class="page-title">#{field.perfil}</div>
+
+            <p:panel header="#{field.parametrodepesquisa}" toggleable="true" toggleSpeed="500">
+                <h:form>
+
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <h:outputText value="Perfil" class="text-bold"/>
+                        <p:inputText value="#{perfilBean.pesquisar}" style="width: 250px;"/>
+                    </h:panelGrid>
+
+                    <p:commandButton value="#{field.pesquisar}" action="#{perfilBean.search()}" 
+                                     icon="ui-icon-search" update=":panelResult" ajax="false"
+                                     onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                </h:form>
+            </p:panel>
+
+            <div class="space"/>
+
+            <p:panel id="panelResult" header="#{field.resultado}" toggleable="true" toggleSpeed="500">
+
+                <h:form>
+
+                    <p:dataTable value="#{perfilBean.listTbperfil}" var="perfil" id="dataTableResult"
+                                 paginatorPosition="bottom" paginator="true" rows="10" paginatorTemplate="{PageLinks}">
+
+                        <p:column headerText="#{field.id}" sortBy="#{perfil.idperfil}">
+                            <h:link value="#{perfil.idperfil}" outcome="Perfil.jsf">
+                                <f:param name="idperfil" value="#{perfil.idperfil}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.nomedoperfil}" sortBy="#{perfil.nmperfil}">
+                            <h:link value="#{perfil.nmperfil}" outcome="Perfil.jsf">
+                                <f:param name="idperfil" value="#{perfil.idperfil}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink>
+                                <p:graphicImage id="delete" value="#{resource['images/delete.gif']}" onclick="PF('confirmation').show();"/>
+                                <f:setPropertyActionListener value="#{perfil}" target="#{perfilBean.select}" />
+                            </p:commandLink>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <div style="text-align: left;">
+                                <p:commandButton ajax="false" value="#{field.adicionar}" action="PerfilEdit.xhtml" 
+                                                 icon="ui-icon-plusthick" onclick="PF('statusDialog').show();"
+                                                 oncomplete="PF('statusDialog').hide()"/>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+
+                    <p:confirmDialog id="confirmDialog" message="#{message.desejaexcluirrealmente}" header="#{field.deletar} #{field.perfil}" 
+                                     severity="alert" widgetVar="confirmation">
+                        <p:commandButton id="confirm" value="#{field.sim}" update=":panelResult" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"
+                                         actionListener="#{perfilBean.remove(perfilBean.select)}"/>
+                        <p:commandButton id="decline" value="#{field.nao}" onclick="PF('confirmation').hide();" type="button"/>
+                    </p:confirmDialog>
+
+                </h:form>
+            </p:panel>
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>

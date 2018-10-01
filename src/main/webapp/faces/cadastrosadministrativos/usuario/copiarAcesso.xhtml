@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <ui:define name="context">
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('usuario')}"/>
+
+        <h:body>
+            
+            <div class="page-title">#{field.usuario}</div>
+            
+            <h:form id="form-copiar">
+                <p:panel id="copia-acesso" header="#{field.copiaracesso}">
+                    <h:panelGrid columns="3" cellspacing="30">
+                        <h:outputText value="#{field.copiaracessousuario}:" class="text-bold"/>  
+
+                        <p:autoComplete id="complete-usuario" value="#{cadastroUsuarioBean.tbusuariosearch}" 
+                                        completeMethod="#{cadastroUsuarioBean.autoComplete}" 
+                                        var="user" itemLabel="#{user.nmnomeusuario}" itemValue="#{user}" 
+                                        converter="converterEntity" forceSelection="true" dropdown="true"
+                                        required="true" requiredMessage="#{message.campologineobrigatorio}"/>
+
+                        <h:outputText value="#{field.parausuario}: #{cadastroUsuarioBean.tbusuario.nmnomeusuario}" 
+                                      class="text-bold"/>
+
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" cellspacing="10" cellpadding="10">
+                        <p:commandButton value="#{field.copiaracesso}" action="#{cadastroUsuarioBean.copiarAcesso()}" 
+                                         icon="ui-icon-transferthick-e-w" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+
+                        <p:commandButton value="#{field.voltar}" action="/faces/cadastrosadministrativos/usuario/consultarUser.xhtml" 
+                                         immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()">
+                            <f:param name="user" value="#{cadastroUsuarioBean.tbusuario.idusuario}"/>
+                        </p:commandButton>
+
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

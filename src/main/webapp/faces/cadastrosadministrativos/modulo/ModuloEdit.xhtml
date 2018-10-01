@@ -1,0 +1,78 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/faces/index.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('cad_modulo')}"/>
+
+        <h:body>           
+
+            <div class="page-title">#{field.modulo}</div>
+            
+            <p:panel header="#{field.adicionarmodulo}" id="panelCadastrar" toggleable="true" 
+                     toggleSpeed="500" rendered="#{moduloBean.tbmodulo.idmodulo == null}">
+                <h:form>
+                    <h:panelGrid columns="2" cellspacing="10">
+
+                        <h:outputText value="#{field.moduloptbr}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.nmmodulo}" required="true" 
+                                     requiredMessage="#{message.informeonomedomoduloempt_br}"/>
+
+                        <h:outputText value="#{field.moduloenus}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.nmmoduloEnUs}" required="true" 
+                                     requiredMessage="#{message.informeonomedomoduloemen_us}"/>
+
+                        <h:outputText value="#{field.descricao}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.txdescmodulo}"/>
+
+                        <h:outputText value="#{field.tipo}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.intipo}" size="1" maxlength="1" 
+                                     required="true" requiredMessage="Informe o tipo do modulo."/>
+
+                    </h:panelGrid>
+
+                    <p:commandButton value="#{field.adicionar}" action="#{moduloBean.create()}" 
+                                     update="@all" icon="ui-icon-plusthick" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                    <p:spacer width="5px"/>
+                    <p:commandButton value="#{field.cancelar}" action="/faces/cadastrosadministrativos/modulo/ModuloList"
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                </h:form>
+            </p:panel>
+
+            <p:panel header="#{field.editar} #{field.modulo}" id="panelEdit" toggleable="true" 
+                     toggleSpeed="500" rendered="#{moduloBean.tbmodulo.idmodulo != null }">
+                <h:form id="formEdit">
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <h:outputText value="#{field.moduloptbr}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.nmmodulo}" required="true" 
+                                     requiredMessage="#{message.informeonomedomoduloempt_br}" size="50"/>
+
+                        <h:outputText value="#{field.moduloenus}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.nmmoduloEnUs}" required="true" 
+                                     requiredMessage="#{message.informeonomedomoduloemen_us}" size="50"/>
+
+                        <h:outputText value="#{field.descricao}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.txdescmodulo}" size="100"/>
+
+                        <h:outputText value="#{field.tipo}" class="text-bold"/>
+                        <p:inputText value="#{moduloBean.tbmodulo.intipo}" size="1" 
+                                     maxlength="1" required="true" requiredMessage="Informe o tipo do modulo."/>
+
+                    </h:panelGrid>
+                    <p:commandButton value="#{field.salvar}" action="#{moduloBean.edit()}" update="@all" icon="ui-icon-disk"
+                                     onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                    <p:spacer width="5px"/>
+                    <p:commandButton value="#{field.cancelar}" action="/faces/cadastrosadministrativos/modulo/ModuloList"
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w"
+                                     onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                </h:form>
+            </p:panel>
+        </h:body>
+    </ui:define>
+</ui:composition>

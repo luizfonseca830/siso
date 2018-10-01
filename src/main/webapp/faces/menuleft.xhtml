@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"    
+    xmlns:p="http://primefaces.org/ui">   
+    
+        <p:accordionPanel id="apMenu" value="#{menuBean.model}" 
+                          var="menu" styleClass="accordionpanel" activeIndex="-1">
+
+            <p:tab id="tabMenu" title="#{menu.strMenu}">
+                <ui:repeat id="repeatList" value="#{menu.listMenuItems}" var="item">
+                    <h:panelGrid id="panelMenuItem" columns="1" styleClass="menu-item">
+                        
+                        <h:panelGrid rendered="#{!item.strUrl.contains('http')}">
+                            <a href="#{shareds.projectDirectory}#{item.strUrl}"
+                               onclick="PF('statusDialog').show();">#{item.strDescription}</a>
+                        </h:panelGrid>
+                        
+                        <h:outputLink id="outputLinkMenu" value="#{item.strUrl}" 
+                                      rendered="#{item.strUrl.contains('http')}"                                                  
+                                      onclick="PF('statusDialog').show();">
+                            #{item.strDescription}
+                        </h:outputLink>
+                    </h:panelGrid>
+                    <p:spacer height="5px"/>
+                </ui:repeat>
+            </p:tab>      
+
+        </p:accordionPanel>
+    
+</ui:fragment>

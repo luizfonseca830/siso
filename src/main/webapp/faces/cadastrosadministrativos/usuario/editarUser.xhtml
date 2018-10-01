@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('usuario')}"/>
+
+        <h:body>
+
+            <div class="page-title">#{field.usuario}</div>
+
+            <h:form id="editar-user">
+                <p:panel header="#{field.editar} #{field.usuario}">
+
+                    <h:panelGrid columns="2" cellspacing="15" cellpadding="15">
+                        <h:outputText  value="#{field.usuario}" class="text-bold"/>
+                        <p:inputText id="Usuário" value="#{cadastroUsuarioBean.tbusuario.nmnomeusuario}"  />
+
+                        <h:outputText value="#{field.login}" class="text-bold"/>
+                        <p:inputText id="Login" value="#{cadastroUsuarioBean.tbusuario.nmloginusuario}" />
+
+                        <h:outputText value="#{field.senha}" class="text-bold"/>
+                        <p:password id="Senha" value="#{cadastroUsuarioBean.senha}" match="Senha" 
+                                    maxlength="20" feedback="true" goodLabel="#{field.boa}" weakLabel="#{field.razoavel}"
+                                    strongLabel="#{field.excelente}" 
+                                    validatorMessage="#{message.digiteamesmasenhanocampoconfirmarsenha}" />
+
+                        <h:outputText value="#{field.cracha}" class="text-bold"/>
+                        <p:inputText id="Crachá" value="#{cadastroUsuarioBean.tbusuario.nmcracha}"  />
+
+                        <h:outputText value="#{field.ativo}" class="text-bold"/>                        
+                        <h:selectBooleanCheckbox value="#{cadastroUsuarioBean.tbusuario.bolativo}" required="true"/>                        
+
+                        <h:outputText value="#{field.nomedoperfil}" class="text-bold"/>
+                        <p:autoComplete id="autoComplete" value="#{cadastroUsuarioBean.tbusuario.idperfil}" 
+                                        completeMethod="#{cadastroUsuarioBean.autoCompleteByPerfil}"
+                                        forceSelection="true" var="perfil" itemValue="#{perfil}" 
+                                        itemLabel="#{perfil.nmperfil}" converter="converterEntity" 
+                                        dropdown="true" scrollHeight="250"/>
+
+
+                        <p:commandButton value="#{field.salvar}" action="#{cadastroUsuarioBean.editUser()}"
+                                         icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()" ajax="false"/>
+                        <p:commandButton value="#{field.voltar}" action="/faces/cadastrosadministrativos/usuario/consultarUser.xhtml" 
+                                         immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()">
+                            <f:param name="user" value="#{cadastroUsuarioBean.tbusuario.idusuario}"/>
+                        </p:commandButton>
+
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

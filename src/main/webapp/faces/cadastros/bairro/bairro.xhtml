@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">       
+
+    <ui:define name="context">           
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('bairro')}"/>       
+
+        <h:body>
+
+            <div class="page-title">#{field.bairro}</div>
+
+            <p:panel id="panel-bairro" header="#{field.dadosdobairro}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="form-bairro">
+
+                    <h:panelGrid id="panel-bairro-pg" columns="2" cellspacing="10">
+
+                        <h:outputText id="panel-bairro-pg-ot-nome" value="#{field.bairro} *" class="text-bold"/>
+                        <h:outputText id="panel-bairro-pg-it-nome" value="#{bairroBean.tbbairro.nmbairro}"
+                                      style="width: 200px;"/>
+                        <h:outputText id="panel-cidade-pg-ot-nome" value="#{field.cidade} *" class="text-bold"/>
+                        <h:outputText id="panel-cidade-pg-it-nome" value="#{bairroBean.tbbairro.idcidade.nmcidade}"
+                                      style="width: 200px;"/>
+
+                    </h:panelGrid> 
+
+                    <div class="space"/>
+
+                    <p:commandButton id="button-salva-bairro" value="#{field.editar}" action="bairroEdit.xhtml" 
+                                     ajax="false" 
+                                     icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()">
+                        <f:param name="idBairro" value="#{bairroBean.tbbairro.idbairro}"/>
+                    </p:commandButton>
+
+                    <p:spacer width="10px"/>
+
+                    <p:commandButton id="button-voltar-list" value="#{field.voltar}" action="bairroList.xhtml" 
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                </h:form>
+
+            </p:panel>            
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>
+

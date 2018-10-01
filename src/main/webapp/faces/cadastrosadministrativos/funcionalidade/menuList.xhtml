@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="context">        
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('funcionalidade')}"/>       
+
+        <h:body>                                                       
+
+            <div class="page-title">#{field.funcionalidade}</div>
+
+            <h:form id="resultMenu">
+                <p:panel id="list-funcionalidade" header="#{field.funcionalidades}" toggleable="true" toggleSpeed="500">
+                    <p:dataTable id="list-menus" styleClass="dttable-list-menus" value="#{funcionalidadeBean.allMenuList}" var="menu"
+                                 rowKey="#{menu.idmenu}" paginator="#{funcionalidadeBean.allMenuList.size() > 30}"
+                                 paginatorPosition="bottom" rows="18" rendered="#{not empty funcionalidadeBean.allMenuList}"
+                                 filteredValue="#{funcionalidadeBean.filterMenu}" widgetVar="menuall"
+                                 scrollable="true"                                 
+                                 scrollHeight="100%"
+                                 resizableColumns="true">
+
+                        <f:facet name="header">
+
+                            <h:outputText value="#{field.pesquisar}:" />  
+                            <p:inputText id="globalFilter" onkeyup="PF('menuall').filter();" style="width:500px; " />                              
+
+                        </f:facet>  
+
+                        <p:column headerText="#{field.idfuncionalidade}" sortBy="#{menu.idmenu}">
+                            <h:link outcome="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.xhtml" value="#{menu.idmenu}">
+                                <f:param name="menuId" value="#{menu.idmenu}"/>
+                            </h:link>
+
+                        </p:column>
+
+                        <p:column headerText="#{field.modulo}" filterBy="#{menu.idmodulo.nmmodulo}"  
+                                  filterMatchMode="contains" sortBy="#{menu.idmodulo.nmmodulo}">
+                            <h:link outcome="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.xhtml" value="#{menu.idmodulo.nmmodulo}">
+                                <f:param name="menuId" value="#{menu.idmenu}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.funcionalidadept}" filterBy="#{menu.nmmenu}" 
+                                  filterMatchMode="contains" sortBy="#{menu.nmmenu}">
+                            <h:link outcome="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.xhtml" 
+                                    value="#{menu.nmmenu}">
+                                <f:param name="menuId" value="#{menu.idmenu}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.funcionalidadeus}" filterBy="#{menu.nmmenuEnUs}" 
+                                  filterMatchMode="contains" sortBy="#{menu.nmmenu}">
+                            <h:link outcome="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.xhtml" 
+                                    value="#{menu.nmmenuEnUs}">
+                                <f:param name="menuId" value="#{menu.idmenu}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.regra}" filterBy="#{menu.txrole}"  
+                                  filterMatchMode="contains" sortBy="#{menu.txrole}">
+                            <h:link outcome="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.xhtml" 
+                                    value="#{menu.txrole}">
+                                <f:param name="menuId" value="#{menu.idmenu}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.caminho}" filterBy="#{menu.txurl}" 
+                                  filterMatchMode="contains" sortBy="#{menu.txurl}">
+                            <h:link outcome="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.xhtml" 
+                                    value="#{menu.txurl}">
+                                <f:param name="menuId" value="#{menu.idmenu}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.sequencial}">
+                            <h:link outcome="/faces/cadastrosadministrativos/funcionalidade/menuConsulta.xhtml" 
+                                    value="#{menu.insequencia}">
+                                <f:param name="menuId" value="#{menu.idmenu}"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink >
+                                <p:graphicImage id="delete" value="#{resource['images/delete.gif']}" onclick="PF('confirmation').show();" />
+                                <f:setPropertyActionListener value="#{menu}" target="#{funcionalidadeBean.menuSelected}" />  
+                            </p:commandLink>
+                        </p:column>                                                
+                    </p:dataTable>
+
+                    <p:confirmDialog id="confirmDialog" message="#{message.desejadeletarestafuncionalidade}"  
+                                     header="#{field.deletarfuncionalidade}" severity="alert" widgetVar="confirmation">  
+
+                        <p:commandButton id="confirm" value="#{field.sim}" update=":resultMenu" oncomplete="PF('confirmation').hide();"  
+                                         actionListener="#{funcionalidadeBean.delete(funcionalidadeBean.menuSelected)}" />  
+                        <p:commandButton id="decline" value="#{field.nao}" onclick="PF('confirmation').hide();" type="button" />   
+
+                    </p:confirmDialog>                     
+
+                    <p:commandButton value="#{field.adicionar}" action="/faces/cadastrosadministrativos/funcionalidade/menuCreate.xhtml" 
+                                     ajax="false" icon="ui-icon-plusthick" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+                </p:panel>
+
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://java.sun.com/jsf/html"                
+      xmlns:p="http://primefaces.org/ui"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <title>Histórico de Orçamento</title>
+        <link href="#{resource['images/logos/logo_mike.jpg']}" rel="shortcut icon" type="image/x-icon"/>
+        <script type="text/javascript" src="#{resource['js/locate-primefaces.js']}" language="js"/>
+        <h:outputStylesheet name="css/style.css" />
+    </h:head>
+
+    <h:outputText id="page-rule" rendered="#{menuBean.isRule('atendimento')}"/>  
+
+    <h:body onload="#{odontogramaBean.loadConsultasOrcamentos()}">
+
+        <div class="page-title">Histórico de Orçamento</div>
+
+        <p:panel id="panel-historico-orcamentos" header="Dados dos orçamentos">
+
+            <h:form id="form-historico-orcamentos">
+
+                <h:panelGrid id="pg-historico-orcamentos" columns="4" cellspacing="10">
+
+                    <h:outputText id="historico-orcamentos-ot-paciente" value="Paciente" class="text-bold"/>
+                    <h:outputText id="historico-orcamentos-ot-paciente-value" 
+                                  value="#{odontogramaBean.tbatendimento.idagendamento.idcliente.nmcliente}"/>
+
+                    <h:outputText id="historico-orcamentos-ot-dtnascimento" value="Data nascimento" class="text-bold"/>
+                    <h:outputText id="historico-orcamentos-ot-dtnascimento-value" 
+                                  value="#{odontogramaBean.tbatendimento.idagendamento.idcliente.dtnascimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>                                              
+
+                </h:panelGrid>
+
+                <p:dataTable value="#{odontogramaBean.listOrcamentoModels}" var="orcamentos"
+                             emptyMessage="Nenhum registro de orçamento foi encontrado">                       
+
+                    <p:subTable value="#{orcamentos.listTbprocedimentos}" var="procedimentos">                            
+
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column headerText="Dente " />
+                                <p:column headerText="Serviço" />
+                                <p:column headerText="Valor do Serviço"/>
+                                <p:column headerText="Status" />
+                                <p:column headerText="Profissional" />
+                            </p:row>                                
+                        </p:columnGroup>
+
+                        <f:facet name="header">
+                            Nr. orçamento #{orcamentos.tborcamento.idorcamento} - Status #{orcamentos.tborcamento.idtipostatusorcamento.nmtipostatusorcamento}
+                        </f:facet>
+
+                        <p:column>
+                            <h:outputText value="#{procedimentos.iddente.nrposicao}"/>
+                        </p:column>
+
+                        <p:column>
+                            <h:outputText value="#{procedimentos.idservico.nmservico}"/>
+                        </p:column>
+                        
+                        <p:column>
+                            <h:outputText value="#{procedimentos.idservico.vlservico}"/>
+                        </p:column>
+
+                        <p:column>
+                            <h:outputText value="#{procedimentos.idtipostatusprocedimento.nmtipostatusprocedimento}"/>
+                        </p:column>
+
+                        <p:column>
+                            <h:outputText value="#{procedimentos.idorcamento.idagendamento.idfuncionario.nmfuncionario}"/>
+                        </p:column>
+                    </p:subTable>
+
+                </p:dataTable>
+
+            </h:form>
+
+        </p:panel>       
+
+    </h:body>
+</html>

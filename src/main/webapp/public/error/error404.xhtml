@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>SISO - Sitema Odontológico</title>
+        <h:outputStylesheet name="css/style.css" />
+        <link href="#{resource['images/logos/logoomarcasisosiso.png']}" rel="shortcut icon" type="image/x-icon"/>
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+                document.getElementById('menu-left').style.display = 'none';
+                $('.show_hide').click(function () {
+                    obj = document.getElementById('menu-left');
+                    if (obj.style.display === 'none') {
+                        $('#menu-left').show("drop", "slow");
+                        $('.context').animate({marginLeft: "210px"}, "slow");
+                    } else {
+                        $('#menu-left').hide("drop", "slow");
+                        $('.context').animate({marginLeft: "5px"}, "slow");
+                    }
+                });
+            });
+        </script>
+    </h:head>
+
+    <style>
+        .menu-left .ui-accordion .ui-accordion-content {padding: 0px;padding-left: 20px;}
+        .menu-left table.menu-item:hover {text-indent: 5px; transition: text-indent .10s linear;}
+        .menu-left .ui-accordion-header a:hover {text-shadow: none; color:#000;}
+    </style>
+
+    <h:body>
+        <f:view locale="#{localeController.currentLocale}">
+            <div class="geral">
+                <div class="header">
+                    <ui:insert name="menu">
+                        <ui:include src="/faces/menutop.xhtml"/>
+                    </ui:insert>
+                </div>
+
+                <div id="menu-left" class="menu-left">                                
+                    <ui:insert id="menuleft" name="menuleft">
+                        <ui:include id="mnleft" src="/faces/menuleft.xhtml"/>
+                    </ui:insert>
+                </div>
+
+                <div style="text-align: center;width: 50%;margin: 0 auto;margin-top: 50px;">
+                    <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true"/>  
+                    <p:panel>                
+                        <h:outputText 
+                            style="color:#FF0000;font-size:13px; font-weight: bold;font-family: Arial" 
+                            value="#{message.erro404apaginaquevoceestatentandoacessandonaofoiencontradaemnossoservidortenteusaraopcaodomenu}" />                    
+                    </p:panel>
+                    <p:spacer height="10px"/>       
+                    <p:panel header="#{field.centraldeajuda}"> 
+                        <center>
+                            <h:panelGrid columns="2" cellspacing="10">
+
+                                <p:graphicImage url="#{resource['images/mail.png']}" style="margin-right:5px; top: 0;width: 28px;height: 23px;"/>
+                                <a href="mailto:mailto:luizfonseca830@gmail.com">Email:luizfonseca830@gmail.com</a>
+
+                                <p:graphicImage url="#{resource['images/phone.png']}" style=" margin-right:5px; top: 0;width: 28px;height: 23px;"/>
+                                <h:outputText value="#{field.telefone}:+55(92)99357-6546"/>
+
+                            </h:panelGrid>
+                        </center>
+                    </p:panel>
+                    <p:spacer height="10px"/>                
+                </div>
+                <p:spacer  height="35px"/>
+                <div class="footer">
+                    <ui:insert name="footer">
+                        <ui:include src="/faces/footer.xhtml"/>
+                    </ui:insert>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+</html>

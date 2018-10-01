@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">       
+
+    <ui:define name="context">           
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('bairro')}"/>       
+
+        <h:body>
+
+            <div class="page-title">#{field.bairro}</div>
+
+            <p:panel id="panel-edit-bairro" header="#{field.teladealteraçãodobairro}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="form-edit-bairro">
+
+                    <h:panelGrid id="panel-edit-bairro-pg" columns="2" cellspacing="10">
+
+                        <h:outputText id="panel-edit-bairro-pg-ot-nome" value="#{field.nome} *" class="text-bold"/>
+                        <p:inputText id="panel-edit-bairro-pg-it-nome" value="#{bairroBean.tbbairro.nmbairro}"
+                                     required="true" requiredMessage="#{message.bairroeobrigatorio}" style="width: 200px;"/>
+
+                        <h:outputText id="panel-edit-cliente-pg-ot-cidade" value="#{field.cidade}" class="text-bold"/>
+                        <p:selectOneMenu id="panel-edit-cliente-pg-som-cidade" value="#{bairroBean.tbbairro.idcidade}"
+                                         filter="true" filterMatchMode="contains" converter="converterEntity" 
+                                         >
+
+                            <f:selectItems value="#{bairroBean.listTbcidade}" var="cidades" itemValue="#{cidades}" itemLabel="#{cidades.nmcidade}"/>
+
+                        </p:selectOneMenu>
+
+                    </h:panelGrid> 
+
+                    <div class="space"/>
+
+                    <p:commandButton id="button-salva-bairro" value="#{field.salvar}" action="#{bairroBean.editTbbairro()}" 
+                                     ajax="false" 
+                                     icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                    <p:spacer width="10px"/>
+
+                    <p:commandButton id="button-voltar-list" value="#{field.voltar}" action="bairro.xhtml" 
+                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()">
+                        <f:param name="idBairro" value="#{bairroBean.tbbairro.idbairro}"/>
+                    </p:commandButton>
+
+                </h:form>
+
+            </p:panel>            
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>
+

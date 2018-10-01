@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/faces/index.xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="context">           
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('cliente')}"/>       
+
+        <h:body>
+
+            <div class="page-title">#{field.cliente}</div>
+
+            <p:panel id="panel-search-cliente" header="#{field.parametrodepesquisa}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="panel-search-cliente-form">
+
+                    <h:panelGrid columns="2" cellspacing="10">
+
+                        <h:outputText value="#{field.nomedocliente}" class="text-bold"/>
+                        <p:inputText value="#{clienteBean.nmClienteSearch}" style="width: 250px; height: 17px"/>
+
+                        <p:commandButton value="#{field.pesquisar}" action="#{clienteBean.pesquisarClientePorNome()}" 
+                                         update=":panel-result-cliente" icon="ui-icon-search" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()" ajax="false"/>
+
+                    </h:panelGrid>
+
+                </h:form>
+
+            </p:panel>
+
+            <p:spacer height="10px"/>
+
+            <p:panel id="panel-result-cliente" header="#{field.resultadosdapesquisa}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="panel-result-cliente-form">
+
+                    <p:dataTable id="dataTable-cliente" value="#{clienteBean.listTbclientes}" var="cliente" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,15,20" emptyMessage="#{message.nenhumresultadoencontrado}">
+
+                        <p:column headerText="#{field.id}">
+                            <h:link value="#{cliente.idcliente}" outcome="cliente.xhtml">
+                                <f:param value="#{cliente.idcliente}" name="idCliente"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column headerText="#{field.nome}">
+                            <h:link value="#{cliente.nmcliente}" outcome="cliente.xhtml">
+                                <f:param value="#{cliente.idcliente}" name="idCliente"/>
+                            </h:link>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink>
+                                <p:graphicImage value="#{resource['images/delete.gif']}" onclick="PF('confirmation').show();"/>
+                                <f:setPropertyActionListener value="#{cliente}" target="#{clienteBean.tbClienteSelected}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <div class="space"/>                   
+
+                    <p:confirmDialog id="confirmDialog" message="#{message.desejadeletarestecliente}?" 
+                                     header="#{field.telaparaexcluircliente}" severity="alert" widgetVar="confirmation">  
+
+                        <p:commandButton id="confirm" value="#{field.sim}"
+                                         update=":panel-result-cliente,:messages" 
+                                         actionListener="#{clienteBean.deletarCliente()}"
+                                         oncomplete="PF('confirmation').hide();"/>  
+                        <p:commandButton id="decline" value="#{field.nao}" onclick="PF('confirmation').hide();" type="button" />   
+                    </p:confirmDialog>
+
+                    <p:commandButton value="#{field.adicionar}" action="/faces/cadastros/cliente/clienteCreate.xhtml" 
+                                     icon="ui-icon-plusthick" onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"/>
+
+                </h:form>
+            </p:panel>
+
+        </h:body>
+
+    </ui:define>
+
+</ui:composition>

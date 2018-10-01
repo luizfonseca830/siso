@@ -1,0 +1,54 @@
+<ui:composition  template="/faces/index.xhtml"  
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:p="http://primefaces.org/ui"                 
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns="http://www.w3.org/1999/xhtml">
+    <ui:define name="context">
+
+        <h:body>
+
+            <div class="page-title">#{field.usuario}</div>
+            
+            <h:form>
+                <p:panel header="#{field.alterarmeucadastro}">
+                    <h:panelGrid  id="panelgrid" columns="2"  cellspacing="10"  cellpadding="1">
+                        <h:outputText  value="#{field.usuario}" class="text-bold"/>
+                        <p:inputText id="Usuário" value="#{cadastroUsuarioBean.tbusuario.nmnomeusuario}"  />
+
+                        <h:outputText value="#{field.login}" class="text-bold"/>
+                        <p:inputText id="Login" value="#{cadastroUsuarioBean.tbusuario.nmloginusuario}" />
+
+                        <h:outputText value="#{field.alterarasenha}"  class="text-bold"/>                        
+                        <h:selectBooleanCheckbox value="#{cadastroUsuarioBean.alterarSenha}">
+                            <p:ajax event="change" update="panelgrid"/>
+                        </h:selectBooleanCheckbox>
+
+                        <h:outputText value="#{field.senha}" class="text-bold" rendered="#{cadastroUsuarioBean.alterarSenha}" />
+                        <p:password id="Senha1" value="#{cadastroUsuarioBean.tbusuario.nmsenhausuario}" 
+                                    match="Senha"  feedback="true" goodLabel="#{field.boa}" 
+                                    weakLabel="#{field.razoavel}" strongLabel="#{field.excelente}" 
+                                    validatorMessage="#{message.digiteamesmasenhanocampoconfirmarsenha}" 
+                                    rendered="#{cadastroUsuarioBean.alterarSenha}"/>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                        <h:outputText value="#{field.confirmarsenha}" class="text-bold"
+                                      rendered="#{cadastroUsuarioBean.alterarSenha}"/>
+                        <p:password id="Senha" value="#{cadastroUsuarioBean.tbusuario.nmsenhausuario}" 
+                                    rendered="#{cadastroUsuarioBean.alterarSenha}"/>
+
+
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <p:commandButton value="#{field.salvar}" action="#{cadastroUsuarioBean.editUserPadrao()}" 
+                                         icon="ui-icon-disk" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()"/>
+                        <p:commandButton value="#{field.voltar}" action="/faces/cadastrosadministrativos/usuario/meusDados.xhtml" 
+                                         immediate="true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('statusDialog').show();"
+                                         oncomplete="PF('statusDialog').hide()">
+                            <f:param name="user" value="#{cadastroUsuarioBean.tbusuario.idusuario}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>      

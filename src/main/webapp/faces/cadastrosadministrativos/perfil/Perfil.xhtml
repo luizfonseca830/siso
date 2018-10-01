@@ -1,0 +1,47 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/faces/index.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="context">
+
+        <h:outputText id="page-rule" rendered="#{menuBean.isRule('perfil')}"/>
+
+        <h:body>
+
+            <div class="page-title">#{field.perfil}</div>
+
+            <p:panel id="panel-perfil" header="#{field.perfil}" toggleable="true" toggleSpeed="500">
+
+                <h:form id="perfil-form">
+
+                    <h:panelGrid columns="2" cellspacing="10">
+
+                        <h:outputText value="#{field.id}" class="text-bold"/>
+                        <h:outputText value="#{perfilBean.tbperfil.idperfil}"/>
+
+                        <h:outputText value="#{field.nomedoperfil}" class="text-bold"/>
+                        <h:outputText value="#{perfilBean.tbperfil.nmperfil}"/>
+
+                    </h:panelGrid>
+
+                    <p:commandButton ajax="false" value="#{field.editar}" action="PerfilEdit.jsf" icon="ui-icon-pencil"
+                                     onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()">
+                        <f:param name="idperfil" value="#{perfilBean.tbperfil.idperfil}"/>
+                    </p:commandButton>
+
+                    <p:spacer width="5px"/> 
+
+                    <p:commandButton value="#{field.voltar}" action="PerfilList.jsf" icon="ui-icon-arrowreturnthick-1-w"
+                                     onclick="PF('statusDialog').show();" oncomplete="PF('statusDialog').hide()"/>
+
+                </h:form>
+            </p:panel>
+
+        </h:body>
+    </ui:define>
+
+</ui:composition>
